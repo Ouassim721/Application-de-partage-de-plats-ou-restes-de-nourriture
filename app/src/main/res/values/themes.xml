@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Thème de base -->
+    <style name="Base.Theme.FoodShareApp" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Couleurs principales -->
+        <item name="colorPrimary">@color/colorPrimary</item>  <!-- Orange (#FFA726) -->
+        <item name="colorPrimaryDark">@color/colorPrimary</item> <!-- Même couleur que la status bar -->
+        <item name="colorSecondary">@color/colorSecondary</item> <!-- Rouge (#F44336) -->
+
+        <!-- Barre de statut -->
+        <item name="android:statusBarColor">@color/colorPrimary</item>
+
+        <!-- Désactivation du dark mode (uniquement si API >= 29) -->
+        <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
+
+        <!-- Autres personnalisations -->
+        <item name="android:windowLightStatusBar">true</item> <!-- Icônes claires dans la barre -->
+    </style>
+
+    <!-- Thème du Splash Screen -->
+    <style name="Theme.MyApp.Splash" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:statusBarColor">@color/white</item> <!-- Barre blanche pendant le splash -->
+    </style>
+
+    <!-- Thème principal de l'application -->
+    <style name="Theme.FoodShareApp" parent="Base.Theme.FoodShareApp" />
+</resources>

@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:padding="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Titre et distance -->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/mealTitle"
+                android:text="Quiche aux Légumes Bio"
+                android:textStyle="bold"
+                android:textSize="20sp"
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:text="500m"
+                android:textColor="@color/gray_medium"
+                android:layout_alignParentEnd="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </RelativeLayout>
+
+        <!-- Disponibilité -->
+        <TextView
+            android:text="Disponible aujourd’hui jusqu’à 20h"
+            android:textColor="@color/gray_medium"
+            android:layout_marginTop="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- Description -->
+        <TextView
+            android:layout_marginTop="8dp"
+            android:text="Une délicieuse quiche maison préparée avec des légumes bio de saison..."
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <!-- Ingrédients (Jetpack Compose ici) -->
+        <androidx.compose.ui.platform.ComposeView
+            android:id="@+id/ingredients_compose"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <!-- Localisation -->
+        <TextView
+            android:text="Localisation"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <ImageView
+            android:src="@drawable/map_placeholder"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:scaleType="centerCrop"
+            android:layout_marginTop="8dp"/>
+
+        <!-- Donateur -->
+        <TextView
+            android:text="Donateur"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:background="@drawable/ic_launcher_background"
+            android:layout_marginTop="8dp"
+            android:padding="12dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@drawable/ic_profile"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+/>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_marginStart="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sophie Martin"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="★ 4.9 (127 avis)"
+                    android:textColor="@color/colorPrimary"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Membre depuis 2022"
+                    android:textColor="@color/gray_medium"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Bouton réserver -->
+        <Button
+            android:layout_marginTop="16dp"
+            android:text="Réserver ce plat"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/colorSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+</ScrollView>
