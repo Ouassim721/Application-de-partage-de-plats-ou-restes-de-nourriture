@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:padding="12dp"
     android:orientation="vertical"
-    android:background="@color/white"
+    android:background="@drawable/rounded_shadow_container"
     android:layout_marginBottom="8dp">
 
     <ImageView
@@ -36,4 +36,15 @@
         android:textSize="12sp"
         android:textColor="@color/colorBrown"
         android:paddingTop="4dp" />
+    <TextView
+        android:id="@+id/reservePlat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:padding="8dp"
+        android:layout_gravity="center_horizontal"
+        android:minWidth="100dp"
+        android:gravity="center"
+        android:textStyle="bold" />
 </LinearLayout>

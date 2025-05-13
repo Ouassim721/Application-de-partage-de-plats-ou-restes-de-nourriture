@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.foodshareapp.R
 import com.example.foodshareapp.data.model.Plat
+import androidx.core.content.ContextCompat
 
 class PlatAdapter(private var plats: List<Plat>) : RecyclerView.Adapter<PlatAdapter.PlatViewHolder>() {
 
@@ -16,6 +17,7 @@ class PlatAdapter(private var plats: List<Plat>) : RecyclerView.Adapter<PlatAdap
         val titre: TextView = itemView.findViewById(R.id.titrePlat)
         val description: TextView = itemView.findViewById(R.id.descriptionPlat)
         val expiration: TextView = itemView.findViewById(R.id.expirationPlat)
+        val reserve: TextView = itemView.findViewById(R.id.reservePlat)
         val image: ImageView = itemView.findViewById(R.id.imagePlat)
     }
 
@@ -29,7 +31,15 @@ class PlatAdapter(private var plats: List<Plat>) : RecyclerView.Adapter<PlatAdap
         holder.titre.text = plat.titre
         holder.description.text = plat.description
         holder.expiration.text = "Expire le : ${plat.expiration}"
-
+        holder.reserve.apply {
+            if (plat.reserve) {
+                text = "Réservé"
+                background = ContextCompat.getDrawable(context, R.drawable.reserved_button_bg)
+            } else {
+                text = "Disponible"
+                background = ContextCompat.getDrawable(context, R.drawable.available_button_bg)
+            }
+        }
         Glide.with(holder.image.context)
             .load(plat.imageUrl)
             .placeholder(R.drawable.placeholder_image)

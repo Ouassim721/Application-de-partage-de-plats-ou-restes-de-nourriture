@@ -1,12 +1,14 @@
 [versions]
 activityCompose = "1.10.1"
 agp = "8.9.2"
+androidxCoreKtx = "1.12.0"
 androidxJunit = "1.2.1"
 appcompatVersion = "1.7.0"
 compiler = "1.5.15"
 compilerVersion = "4.16.0"
 composeBom = "2025.05.00"
 constraintlayoutVersion = "2.2.1"
+core = "1.16.0"
 coreKtxVersion = "1.16.0"
 espressoCoreVersion = "3.6.1"
 firebaseAuthKtxVersion = "23.2.0"
@@ -47,8 +49,10 @@ androidx-activity-ktx = { module = "androidx.activity:activity-ktx", version.ref
 androidx-appcompat-v170 = { module = "androidx.appcompat:appcompat", version.ref = "appcompatVersion" }
 androidx-compose-material3-material3 = { module = "androidx.compose.material3:material3" }
 androidx-constraintlayout-v221 = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
+androidx-core = { module = "androidx.core:core", version.ref = "core" }
 androidx-core-ktx-v1120 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compilerVersion" }
+core-ktx-v1120 = { module = "androidx.core:core-ktx", version.ref = "androidxCoreKtx" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 google-material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
 imagepicker = { module = "com.github.dhaval2404:imagepicker", version.ref = "imagepicker" }

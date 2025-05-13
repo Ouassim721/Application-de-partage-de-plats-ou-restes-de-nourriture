@@ -1,4 +1,4 @@
-package com.example.foodshareapp.ui.fragments
+package com.example.foodshareapp.ui.messages
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

@@ -115,5 +115,8 @@ dependencies {
     //GLIDE
     implementation(libs.glide) // Version actuelle
     annotationProcessor(libs.compiler) // Pour le traitement des annotations
+//ContextCompat
+    implementation(libs.core.ktx.v1120)
+    implementation(libs.androidx.core)
 
 }

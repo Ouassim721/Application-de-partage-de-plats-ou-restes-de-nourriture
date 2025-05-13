@@ -14,7 +14,7 @@ class SplashActivity : AppCompatActivity() {
 
         Handler().postDelayed({
             // Redirection après 2 secondes
-            val intent = Intent(this, HomeActivity::class.java) // ou MainActivity
+            val intent = Intent(this, MainActivity::class.java) // ou MainActivity
             startActivity(intent)
             finish()
         }, 2000)
