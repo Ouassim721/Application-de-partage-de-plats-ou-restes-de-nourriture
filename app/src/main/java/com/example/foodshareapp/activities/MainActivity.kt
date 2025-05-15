@@ -2,46 +2,14 @@ package com.example.foodshareapp.activities
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.navigation.ui.setupWithNavController
 import com.example.foodshareapp.R
 import com.example.foodshareapp.databinding.ActivityMainBinding
-import com.example.foodshareapp.ui.home.HomeFragment
-import com.example.foodshareapp.ui.map.MapFragment
-import com.example.foodshareapp.ui.profile.ProfileFragment
-import com.example.foodshareapp.ui.publish.PublishFragment
-import com.example.foodshareapp.ui.messages.MessagesFragment
 
-/*class MainActivity : AppCompatActivity() {
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 
-    private lateinit var binding: ActivityMainBinding
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
-
-        val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
-
-        bottomNavigationView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.nav_home -> {
-                    startActivity(Intent(this, HomeActivity::class.java))
-                    true
-                }
-                /*R.id.nav_my_dishes -> {
-                    startActivity(Intent(this, MyDishesActivity::class.java))
-                    true
-                }*/
-                R.id.nav_profile -> {
-                    startActivity(Intent(this, ProfileActivity::class.java))
-                    true
-                }
-                else -> false
-            }
-        }
-    }
-
-}*/
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -51,29 +19,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Par défaut on affiche HomeFragment
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, HomeFragment())
-            .commit()
-
-        binding.bottomNavigationView.setOnItemSelectedListener { item ->
-            val fragment: Fragment? = when (item.itemId) {
-                R.id.nav_home -> HomeFragment()
-                R.id.nav_carte -> MapFragment()
-                R.id.nav_ajouter -> PublishFragment()
-                R.id.nav_message -> MessagesFragment()
-                R.id.nav_profile -> ProfileFragment()
-                else -> null
-            }
-
-            fragment?.let {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragmentContainer, it)
-                    .commit()
-            }
-
-            true
-        }
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
+        binding.bottomNavigationView.setupWithNavController(navController)
     }
+
 }
 

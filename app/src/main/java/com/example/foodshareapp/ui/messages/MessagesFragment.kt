@@ -68,7 +68,8 @@ class MessagesFragment : Fragment() {
         }
 
         parentFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, chatFragment)
+            .replace(R.id.nav_host_fragment
+                , chatFragment)
             .addToBackStack(null)
             .commit()
     }

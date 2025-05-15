@@ -47,4 +47,15 @@
         android:minWidth="100dp"
         android:gravity="center"
         android:textStyle="bold" />
+    <Button
+        android:id="@+id/btnContacter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contacter"
+        android:backgroundTint="@color/colorPrimary"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_message"
+        android:gravity="center_vertical" />
+
 </LinearLayout>
