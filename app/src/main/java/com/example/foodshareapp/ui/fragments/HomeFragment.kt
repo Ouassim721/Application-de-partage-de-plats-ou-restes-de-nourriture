@@ -13,9 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodshareapp.R
-import com.example.foodshareapp.data.model.Dish
 import com.example.foodshareapp.data.model.Plat
-import com.example.foodshareapp.ui.components.DishList
 import com.example.foodshareapp.ui.components.FloatingAddButton
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query

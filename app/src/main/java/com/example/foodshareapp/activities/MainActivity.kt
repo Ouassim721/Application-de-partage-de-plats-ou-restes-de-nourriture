@@ -9,6 +9,7 @@ import com.example.foodshareapp.ui.fragments.HomeFragment
 import com.example.foodshareapp.ui.fragments.MapFragment
 import com.example.foodshareapp.ui.fragments.ProfileFragment
 import com.example.foodshareapp.ui.fragments.PublishFragment
+import com.example.foodshareapp.ui.messages.MessagesFragment
 
 /*class MainActivity : AppCompatActivity() {
 

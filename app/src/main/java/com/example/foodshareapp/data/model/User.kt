@@ -1,4 +1,7 @@
 package com.example.foodshareapp.data.model
 
-class User {
-}
+data class User(
+    val uid: String = "",
+    val name: String = "",
+    val profileImageUrl: String = ""
+)

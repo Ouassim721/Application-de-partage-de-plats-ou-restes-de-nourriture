@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.compose")
+    id("com.google.devtools.ksp") // Ajout explicite du plugin KSP
 }
 
 android {
@@ -108,15 +109,21 @@ dependencies {
 
     // Coil pour chargement d'images
     implementation(libs.coil.compose)
+
     //image picker
     implementation(libs.imagepicker)
+
     //boite dialogue
     implementation(libs.google.material.v190)
-    //GLIDE
-    implementation(libs.glide) // Version actuelle
-    annotationProcessor(libs.compiler) // Pour le traitement des annotations
-//ContextCompat
+
+    //GLIDE - Une seule version de Glide
+    implementation(libs.glide.v4151)
+
+    //ContextCompat
     implementation(libs.core.ktx.v1120)
     implementation(libs.androidx.core)
 
+    // Firebase (déjà déclaré ci-dessus, éviter la duplication)
+    // implementation(libs.com.google.firebase.firebase.firestore.ktx)
+    // implementation(libs.com.google.firebase.firebase.auth.ktx)
 }

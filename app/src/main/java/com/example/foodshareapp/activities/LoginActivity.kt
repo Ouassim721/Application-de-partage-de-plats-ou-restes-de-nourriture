@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.foodshareapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.example.foodshareapp.ui.fragments.HomeFragment
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
@@ -43,7 +44,7 @@ class LoginActivity : AppCompatActivity() {
                             firestore.collection("users").document(it).get()
                                 .addOnSuccessListener { doc ->
                                     val role = doc.getString("role")
-                                    val intent = Intent(this, HomeActivity::class.java)
+                                    val intent = Intent(this, HomeFragment::class.java)
                                     intent.putExtra("role", role)
                                     startActivity(intent)
                                     finish()
