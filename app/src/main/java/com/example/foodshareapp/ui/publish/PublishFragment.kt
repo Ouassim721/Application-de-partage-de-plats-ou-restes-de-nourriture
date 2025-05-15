@@ -1,4 +1,4 @@
-package com.example.foodshareapp.ui.fragments
+package com.example.foodshareapp.ui.publish
 
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
@@ -14,18 +14,18 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.example.foodshareapp.R
 import com.example.foodshareapp.data.model.Plat
+import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.Timestamp
 import java.util.Calendar
 import java.util.UUID
-import com.github.dhaval2404.imagepicker.ImagePicker
 
 class PublishFragment : Fragment() {
 
@@ -91,7 +91,7 @@ class PublishFragment : Fragment() {
 
     private fun setupButtonListeners() {
         btnAddImage.setOnClickListener {
-            ImagePicker.with(this)
+            ImagePicker.Companion.with(this)
                 .galleryOnly()
                 .crop()
                 .compress(1024)
@@ -178,7 +178,7 @@ class PublishFragment : Fragment() {
             expiration = editExpiration.text.toString().trim(),
             localisation = editLocalisation.text.toString().trim(),
             imageUrl = imageUrl,
-            datePublication = Timestamp.now(),
+            datePublication = Timestamp.Companion.now(),
             userId = user?.uid ?: ""
         )
 

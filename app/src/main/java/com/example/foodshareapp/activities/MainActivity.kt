@@ -5,10 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.foodshareapp.R
 import com.example.foodshareapp.databinding.ActivityMainBinding
-import com.example.foodshareapp.ui.fragments.HomeFragment
-import com.example.foodshareapp.ui.fragments.MapFragment
-import com.example.foodshareapp.ui.fragments.ProfileFragment
-import com.example.foodshareapp.ui.fragments.PublishFragment
+import com.example.foodshareapp.ui.home.HomeFragment
+import com.example.foodshareapp.ui.map.MapFragment
+import com.example.foodshareapp.ui.profile.ProfileFragment
+import com.example.foodshareapp.ui.publish.PublishFragment
 import com.example.foodshareapp.ui.messages.MessagesFragment
 
 /*class MainActivity : AppCompatActivity() {

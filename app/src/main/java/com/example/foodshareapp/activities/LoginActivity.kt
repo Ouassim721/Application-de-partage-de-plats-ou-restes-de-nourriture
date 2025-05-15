@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.example.foodshareapp.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.example.foodshareapp.ui.fragments.HomeFragment
+import com.example.foodshareapp.ui.home.HomeFragment
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var auth: FirebaseAuth

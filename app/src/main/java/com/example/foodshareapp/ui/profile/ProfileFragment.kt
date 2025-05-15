@@ -1,4 +1,4 @@
-package com.example.foodshareapp.ui.fragments
+package com.example.foodshareapp.ui.profile
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,16 +6,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
-import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
 import com.example.foodshareapp.R
 import com.example.foodshareapp.ui.components.DishListSection
