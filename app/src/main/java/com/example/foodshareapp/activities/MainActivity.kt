@@ -1,5 +1,6 @@
 package com.example.foodshareapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.ui.setupWithNavController
@@ -23,7 +24,39 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
         binding.bottomNavigationView.setupWithNavController(navController)
+        binding.bottomNavigationView.setOnItemSelectedListener { item ->
+            val protectedFragments = setOf(
+                R.id.messagesFragment,
+                R.id.chatFragment,
+                R.id.profileFragment,
+                R.id.addFragment
+            )
+
+            if (item.itemId in protectedFragments && !isUserLoggedIn()) {
+                startActivity(Intent(this, LoginActivity::class.java))
+                return@setOnItemSelectedListener false
+            }
+
+            // Safe navigation
+            val success = try {
+                navController.navigate(item.itemId)
+                true
+            } catch (e: IllegalArgumentException) {
+                false
+            }
+
+            success
+        }
+
+
+
     }
+
+    private fun isUserLoggedIn(): Boolean {
+        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+        return sharedPref.getBoolean("isLoggedIn", false)
+    }
+
 
 }
 
