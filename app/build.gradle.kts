@@ -123,7 +123,9 @@ dependencies {
     implementation(libs.androidx.core)
     implementation(libs.play.services.location)
 
-
+    implementation (libs.play.services.maps)
+    implementation (libs.firebase.database)
+    implementation (libs.play.services.location)
     // Firebase (déjà déclaré ci-dessus, éviter la duplication)
     // implementation(libs.com.google.firebase.firebase.firestore.ktx)
     // implementation(libs.com.google.firebase.firebase.auth.ktx)

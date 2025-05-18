@@ -52,7 +52,8 @@ class PublishFragment : Fragment() {
     private val storageRef by lazy { FirebaseStorage.getInstance().reference }
     private val db by lazy { FirebaseFirestore.getInstance() }
     private val user by lazy { FirebaseAuth.getInstance().currentUser }
-
+    private var currentLatitude: Double? = null
+    private var currentLongitude: Double? = null
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
         private const val LOCATION_ENABLE_REQUEST_CODE = 1002
@@ -207,7 +208,8 @@ class PublishFragment : Fragment() {
             try {
                 val geocoder = Geocoder(requireContext(), Locale.getDefault())
                 val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
-
+                 currentLatitude = location.latitude
+                 currentLongitude = location.longitude
                 if (!addresses.isNullOrEmpty()) {
                     val address = addresses[0]
                     val locationText = buildString {
@@ -230,6 +232,7 @@ class PublishFragment : Fragment() {
         }
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -337,6 +340,8 @@ class PublishFragment : Fragment() {
             localisation = editLocalisation.text.toString().trim(),
             imageUrl = imageUrl,
             datePublication = Timestamp.now(),
+            latitude = currentLatitude ?: 0.0,
+            longitude = currentLongitude ?: 0.0,
             userId = user?.uid ?: ""
         )
 

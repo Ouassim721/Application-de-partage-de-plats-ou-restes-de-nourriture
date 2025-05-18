@@ -9,6 +9,8 @@ data class Plat(
     val imageUrl: String = "",
     val reserve : Boolean = false,
     val datePublication: com.google.firebase.Timestamp = com.google.firebase.Timestamp.now(),
+    val latitude: Double = 0.0,
+    val longitude: Double = 0.0,
     val userId: String = ""
 )
 

@@ -18,6 +18,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodShareApp"
         tools:targetApi="31">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyDzBX_svB5ck-4aUfOFkyyTB5yrjEl_SrE" />
          <activity
              android:name=".activities.SplashActivity"
              android:exported="true"
