@@ -13,11 +13,11 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
             android:layout_marginBottom="16dp"
             android:text="Publier un plat"
             android:textColor="@color/black"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:gravity="center" />
 
         <ImageView
             android:id="@+id/imagePreview"
@@ -26,7 +26,6 @@
             android:layout_marginBottom="12dp"
             android:background="@color/gray_medium"
             android:scaleType="centerCrop" />
-        <!--            android:src="@drawable/ic_round_add"-->
 
         <Button
             android:id="@+id/btnAddImage"
@@ -41,14 +40,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Titre du plat" />
+            android:hint="Titre du plat"
+            android:inputType="text" />
 
         <EditText
             android:id="@+id/editDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Description" />
+            android:hint="Description"
+            android:inputType="textMultiLine"
+            android:minLines="3" />
 
         <EditText
             android:id="@+id/editPortions"
@@ -63,25 +65,33 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Date d'expiration (ex: 2025-05-13)" />
+            android:hint="Date d'expiration (ex: 2025-05-13)"
+            android:inputType="date" />
+        <Button
+            android:id="@+id/btnDetectLocation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Détecter ma position" />
 
         <EditText
             android:id="@+id/editLocalisation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Localisation" />
+            android:hint="Votre localisation"
+            android:enabled="false" />
 
-        <!-- Bouton Publier -->
+
         <Button
             android:id="@+id/btnPublier"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Publier"
-            android:backgroundTint="@color/colorSecondary"
             android:textColor="@color/white"
             android:layout_marginTop="16dp"
-            android:background="@drawable/rounded_button" />
+            android:backgroundTint="@color/colorSecondary" />
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -89,6 +99,5 @@
             android:visibility="gone"
             android:layout_gravity="center"
             android:layout_marginTop="16dp" />
-
     </LinearLayout>
 </ScrollView>

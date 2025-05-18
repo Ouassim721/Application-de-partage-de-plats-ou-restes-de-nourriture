@@ -3,8 +3,7 @@ plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
     id("org.jetbrains.kotlin.plugin.compose")
-    id("com.google.devtools.ksp") // Ajout explicite du plugin KSP
-}
+    }
 
 android {
     namespace = "com.example.foodshareapp"
@@ -122,6 +121,8 @@ dependencies {
     //ContextCompat
     implementation(libs.core.ktx.v1120)
     implementation(libs.androidx.core)
+    implementation(libs.play.services.location)
+
 
     // Firebase (déjà déclaré ci-dessus, éviter la duplication)
     // implementation(libs.com.google.firebase.firebase.firestore.ktx)

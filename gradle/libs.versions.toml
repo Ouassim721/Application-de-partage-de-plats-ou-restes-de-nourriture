@@ -1,6 +1,8 @@
 [versions]
 activityCompose = "1.10.1"
-agp = "8.9.2"
+agp = "8.9.3"
+firebaseDatabase = "21.0.0"
+playServicesLocation = "21.3.0"
 androidxCoreKtx = "1.16.0"
 androidxJunit = "1.2.1"
 appcompatVersion = "1.7.0"
@@ -43,6 +45,9 @@ lifecycleViewmodelKtx = "2.9.0"
 playServicesCastFramework = "22.1.0"
 identityJvm = "202411.1"
 firebaseStorageKtx = "21.0.1"
+ksp = "2.1.0-1.0.19"
+playServicesLocationVersion = "21.0.1"
+playServicesMaps = "19.2.0"
 [libraries]
 # AndroidX & UI
 
@@ -53,11 +58,13 @@ androidx-compose-material3-material3 = { module = "androidx.compose.material3:ma
 androidx-constraintlayout-v221 = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayoutVersion" }
 androidx-core = { module = "androidx.core:core", version.ref = "core" }
 androidx-core-ktx-v1120 = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
+
 com-google-firebase-firebase-auth-ktx = { module = "com.google.firebase:firebase-auth-ktx" }
 com-google-firebase-firebase-firestore-ktx = { module = "com.google.firebase:firebase-firestore-ktx" }
 compiler = { module = "com.github.bumptech.glide:compiler", version.ref = "compilerVersion" }
 compiler-v4151 = { module = "com.github.bumptech.glide:compiler", version.ref = "githubCompiler" }
 core-ktx-v1120 = { module = "androidx.core:core-ktx", version.ref = "androidxCoreKtx" }
+firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 glide-v4151 = { module = "com.github.bumptech.glide:glide", version.ref = "glideVersion" }
 google-material-v190 = { module = "com.google.android.material:material", version.ref = "googleMaterial" }
@@ -101,6 +108,8 @@ androidx-espresso-core-v351 = { module = "androidx.test.espresso:espresso-core",
 androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 
+play-services-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "playServicesLocation" }
+
 # Autres dépendances (conservées mais non utilisées dans votre build.gradle.kts actuel)
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
@@ -120,6 +129,8 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 play-services-cast-framework = { group = "com.google.android.gms", name = "play-services-cast-framework", version.ref = "playServicesCastFramework" }
 identity-jvm = { group = "com.android.identity", name = "identity-jvm", version.ref = "identityJvm" }
 firebase-storage-ktx = { group = "com.google.firebase", name = "firebase-storage-ktx", version.ref = "firebaseStorageKtx" }
+play-services-location-v2101 = { module = "com.google.android.gms:play-services-location", version.ref = "playServicesLocationVersion" }
+play-services-maps = { module = "com.google.android.gms:play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

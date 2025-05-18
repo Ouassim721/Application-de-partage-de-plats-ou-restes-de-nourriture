@@ -1,37 +1,42 @@
 package com.example.foodshareapp.ui.publish
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.IntentSender
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.Location
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.ProgressBar
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.foodshareapp.R
 import com.example.foodshareapp.data.model.Plat
 import com.github.dhaval2404.imagepicker.ImagePicker
+import com.google.android.gms.common.api.ResolvableApiException
+import com.google.android.gms.location.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
-import java.util.Calendar
-import java.util.UUID
+import java.util.*
 
 class PublishFragment : Fragment() {
 
     private lateinit var imagePreview: ImageView
     private lateinit var btnAddImage: Button
     private lateinit var btnPublier: Button
+    private lateinit var btnDetectLocation: Button
     private lateinit var progressBar: ProgressBar
     private lateinit var editTitre: EditText
     private lateinit var editDescription: EditText
@@ -39,12 +44,20 @@ class PublishFragment : Fragment() {
     private lateinit var editExpiration: EditText
     private lateinit var editLocalisation: EditText
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var locationRequest: LocationRequest
+    private lateinit var locationCallback: LocationCallback
+
     private var imageUri: Uri? = null
     private val storageRef by lazy { FirebaseStorage.getInstance().reference }
     private val db by lazy { FirebaseFirestore.getInstance() }
     private val user by lazy { FirebaseAuth.getInstance().currentUser }
 
-    @SuppressLint("DefaultLocale")
+    companion object {
+        private const val LOCATION_PERMISSION_REQUEST_CODE = 1001
+        private const val LOCATION_ENABLE_REQUEST_CODE = 1002
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -53,6 +66,7 @@ class PublishFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_publish, container, false)
 
         initViews(view)
+        initLocationServices()
         setupDatePicker()
         setupButtonListeners()
 
@@ -63,12 +77,31 @@ class PublishFragment : Fragment() {
         imagePreview = view.findViewById(R.id.imagePreview)
         btnAddImage = view.findViewById(R.id.btnAddImage)
         btnPublier = view.findViewById(R.id.btnPublier)
+        btnDetectLocation = view.findViewById(R.id.btnDetectLocation)
         progressBar = view.findViewById(R.id.progressBar)
         editTitre = view.findViewById(R.id.editTitre)
         editDescription = view.findViewById(R.id.editDescription)
         editPortions = view.findViewById(R.id.editPortions)
         editExpiration = view.findViewById(R.id.editExpiration)
         editLocalisation = view.findViewById(R.id.editLocalisation)
+    }
+
+    private fun initLocationServices() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
+
+        locationRequest = LocationRequest.create().apply {
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+            interval = 10000
+            fastestInterval = 5000
+        }
+
+        locationCallback = object : LocationCallback() {
+            override fun onLocationResult(locationResult: LocationResult) {
+                super.onLocationResult(locationResult)
+                fusedLocationClient.removeLocationUpdates(this)
+                handleLocation(locationResult.lastLocation)
+            }
+        }
     }
 
     private fun setupDatePicker() {
@@ -91,11 +124,15 @@ class PublishFragment : Fragment() {
 
     private fun setupButtonListeners() {
         btnAddImage.setOnClickListener {
-            ImagePicker.Companion.with(this)
+            ImagePicker.with(this)
                 .galleryOnly()
                 .crop()
                 .compress(1024)
                 .start()
+        }
+
+        btnDetectLocation.setOnClickListener {
+            checkLocationPermission()
         }
 
         btnPublier.setOnClickListener {
@@ -107,12 +144,133 @@ class PublishFragment : Fragment() {
         }
     }
 
+    private fun checkLocationPermission() {
+        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            ActivityCompat.requestPermissions(
+                requireActivity(),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                LOCATION_PERMISSION_REQUEST_CODE
+            )
+        } else {
+            checkLocationSettings()
+        }
+    }
+
+    private fun checkLocationSettings() {
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+
+        val client = LocationServices.getSettingsClient(requireContext())
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener {
+            // GPS activé, démarrer la détection
+            startLocationUpdates()
+        }
+
+        task.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                // GPS désactivé, proposer de l'activer
+                try {
+                    exception.startResolutionForResult(
+                        requireActivity(),
+                        LOCATION_ENABLE_REQUEST_CODE
+                    )
+                } catch (sendEx: IntentSender.SendIntentException) {
+                    Toast.makeText(requireContext(), "Erreur d'activation du GPS", Toast.LENGTH_SHORT).show()
+                }
+            } else {
+                Toast.makeText(requireContext(), "Service de localisation indisponible", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun startLocationUpdates() {
+        btnDetectLocation.isEnabled = false
+        btnDetectLocation.text = "Détection en cours..."
+
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
+            locationCallback,
+            null
+        )
+    }
+
+    private fun handleLocation(location: Location?) {
+        btnDetectLocation.isEnabled = true
+        btnDetectLocation.text = "Détecter ma position"
+
+        if (location != null) {
+            try {
+                val geocoder = Geocoder(requireContext(), Locale.getDefault())
+                val addresses = geocoder.getFromLocation(location.latitude, location.longitude, 1)
+
+                if (!addresses.isNullOrEmpty()) {
+                    val address = addresses[0]
+                    val locationText = buildString {
+                        address.locality?.let { append(it) }
+                        address.thoroughfare?.let {
+                            if (isNotEmpty()) append(", ")
+                            append(it)
+                        }
+                    }
+                    editLocalisation.setText(locationText)
+                } else {
+                    Toast.makeText(requireContext(), "Adresse introuvable", Toast.LENGTH_SHORT).show()
+                }
+            } catch (e: Exception) {
+                Log.e("PublishFragment", "Geocoding error", e)
+                Toast.makeText(requireContext(), "Erreur de géocodage", Toast.LENGTH_SHORT).show()
+            }
+        } else {
+            Toast.makeText(requireContext(), "Localisation non disponible", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocationSettings()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    "Permission refusée - La localisation ne fonctionnera pas",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+    }
+
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == AppCompatActivity.RESULT_OK) {
-            imageUri = data?.data
-            imagePreview.setImageURI(imageUri)
+
+        when (requestCode) {
+            LOCATION_ENABLE_REQUEST_CODE -> {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    checkLocationSettings()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        "GPS non activé - La localisation ne fonctionnera pas",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            else -> {
+                if (resultCode == AppCompatActivity.RESULT_OK) {
+                    imageUri = data?.data
+                    imagePreview.setImageURI(imageUri)
+                }
+            }
         }
     }
 
@@ -178,7 +336,7 @@ class PublishFragment : Fragment() {
             expiration = editExpiration.text.toString().trim(),
             localisation = editLocalisation.text.toString().trim(),
             imageUrl = imageUrl,
-            datePublication = Timestamp.Companion.now(),
+            datePublication = Timestamp.now(),
             userId = user?.uid ?: ""
         )
 

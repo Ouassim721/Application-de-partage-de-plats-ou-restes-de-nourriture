@@ -24,6 +24,7 @@ dependencyResolutionManagement {
             }
         }
         mavenCentral()
+        gradlePluginPortal()
         maven { url = uri("https://jitpack.io") }  // Ajouté ici pour les dépendances normales
     }
 }
