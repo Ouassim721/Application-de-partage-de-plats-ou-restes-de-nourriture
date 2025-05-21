@@ -12,4 +12,7 @@
     <string name="login_failed">"Login failed"</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="portions_format">Portions: %d</string>
+    <string name="reserved">Réservé</string>
+    <string name="plat_image_description">Image du plat</string>
 </resources>

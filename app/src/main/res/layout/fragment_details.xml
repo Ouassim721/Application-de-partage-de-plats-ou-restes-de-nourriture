@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Image du plat -->
+        <ImageView
+            android:id="@+id/imagePlat"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/plat_image_description"
+            tools:src="@drawable/placeholder_image" />
+
+        <!-- Badge Réservé -->
+        <TextView
+            android:id="@+id/reserveBadge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/badge_background"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            android:text="@string/reserved"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <!-- Groupes de chips -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <!-- Statut (Restes/Plat préparé) -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupStatut"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+
+            <!-- Types (Salé/Sucré/etc.) -->
+            <com.google.android.material.chip.ChipGroup
+                android:id="@+id/chipGroupTypePlat"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true" />
+        </LinearLayout>
+
+        <!-- Titre -->
+        <TextView
+            android:id="@+id/titrePlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            tools:text="Nom du plat" />
+
+        <!-- Localisation -->
+        <TextView
+            android:id="@+id/localisationPlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_location"
+            android:drawablePadding="4dp"
+            android:textSize="16sp"
+            tools:text="Paris, France" />
+
+        <!-- Portions -->
+        <TextView
+            android:id="@+id/portionsPlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_pizza_slice"
+            android:drawablePadding="4dp"
+            android:textSize="16sp"
+            tools:text="Portions: 3" />
+
+        <!-- Date d'expiration -->
+        <TextView
+            android:id="@+id/expirationPlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:drawableStart="@drawable/ic_clock"
+            android:drawablePadding="4dp"
+            android:textSize="16sp"
+            tools:text="Expire: 12/12/2023" />
+
+        <!-- Description -->
+        <TextView
+            android:id="@+id/descriptionPlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            tools:text="Description détaillée du plat..." />
+
+        <!-- Ingrédients -->
+        <TextView
+            android:id="@+id/ingredientsPlat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="16sp"
+            tools:text="Ingrédients: tomate, oignon, fromage..." />
+
+    </LinearLayout>
+</ScrollView>

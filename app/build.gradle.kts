@@ -1,9 +1,10 @@
 plugins {
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.android.application)
-    id("com.google.gms.google-services")
-    id("org.jetbrains.kotlin.plugin.compose")
-    }
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.compose.compiler)
+    id("kotlin-parcelize") // Ajouté pour le support Parcelable
+}
 
 android {
     namespace = "com.example.foodshareapp"
@@ -11,12 +12,10 @@ android {
 
     defaultConfig {
         applicationId = "com.example.foodshareapp"
-        minSdk = 25
+        minSdk = 26
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -30,103 +29,86 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "17"
     }
 
     buildFeatures {
         compose = true
-        viewBinding = true // utile si tu utilises aussi des layouts XML
+        viewBinding = true // Ajouté si vous utilisez ViewBinding
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.1"
-    }
-    packaging {
-        resources {
-            // Exclure les fichiers en conflit
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-            excludes += "/META-INF/versions/9/OSGI-INF/MANIFEST.MF"
-            excludes += "/META-INF/DEPENDENCIES"
-            excludes += "/META-INF/LICENSE"
-            excludes += "/META-INF/LICENSE.txt"
-            excludes += "/META-INF/NOTICE"
-            excludes += "/META-INF/NOTICE.txt"
-            excludes += "/META-INF/README.md"
-        }
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
 dependencies {
-    // AndroidX & UI
-    implementation(libs.androidx.core.ktx.v1120)
-    implementation(libs.androidx.appcompat.v170)
-    implementation(libs.material.v190)
-    implementation(libs.androidx.constraintlayout.v221)
+    // AndroidX Core
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.material)
+    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity.ktx)
-    implementation(libs.androidx.activity.compose)
-    implementation(libs.androidx.compose.material3.icons.extended)
-    implementation(libs.androidx.compose.material3.material3)
-    implementation(libs.material.icons.extended)
-
-    // Jetpack Compose (via BOM)
-    implementation(platform(libs.androidx.compose.bom))
-    implementation(libs.androidx.ui)
-    implementation(libs.androidx.ui.graphics)
-    implementation(libs.androidx.ui.tooling.preview)
-    implementation(libs.androidx.material3)
-    implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.annotation)
+
+    // Lifecycle
     implementation(libs.androidx.lifecycle.livedata.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.play.services.cast.framework)
-    implementation(libs.identity.jvm)
-    implementation(libs.firebase.storage.ktx)
-    debugImplementation(libs.androidx.ui.tooling)
-    implementation(libs.androidx.compiler)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 
-    // Navigation (XML et Compose)
+    // Navigation
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.navigation.compose)
 
-    // Firebase via BoM
-    implementation(platform(libs.firebase.bom.v3231))
+    // Jetpack Compose (BOM)
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.compose.ui)
+    implementation(libs.androidx.compose.ui.graphics)
+    implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
+    implementation(libs.androidx.activity.compose)
+    debugImplementation(libs.androidx.compose.ui.tooling)
+
+    // Firebase (BOM)
+    implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
-    implementation(libs.google.firebase.auth.ktx)
-    implementation(libs.google.firebase.firestore.ktx)
+    implementation(libs.firebase.auth.ktx)
+    implementation(libs.firebase.firestore.ktx)
+    implementation(libs.firebase.storage.ktx)
+    implementation(libs.firebase.database.ktx)
 
-    // Tests
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit.v115)
-    androidTestImplementation(libs.androidx.espresso.core.v351)
+    // Google Play Services
+    implementation(libs.play.services.location)
+    implementation(libs.play.services.maps)
+    implementation(libs.play.services.cast.framework)
 
-    // Coil pour chargement d'images
+    // Image Loading
+    implementation(libs.glide)
     implementation(libs.coil.compose)
 
-    //image picker
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.core)
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // UI Helpers
     implementation(libs.imagepicker)
 
-    //boite dialogue
-    implementation(libs.google.material.v190)
+    // Room Database (si utilisé)
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
 
-    //GLIDE - Une seule version de Glide
-    implementation(libs.glide.v4151)
-
-    //ContextCompat
-    implementation(libs.core.ktx.v1120)
-    implementation(libs.androidx.core)
-    implementation(libs.play.services.location)
-
-    implementation (libs.play.services.maps)
-    implementation (libs.firebase.database)
-    implementation (libs.play.services.location)
-    // Firebase (déjà déclaré ci-dessus, éviter la duplication)
-    // implementation(libs.com.google.firebase.firebase.firestore.ktx)
-    // implementation(libs.com.google.firebase.firebase.auth.ktx)
+    // Testing
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
 }

@@ -8,11 +8,21 @@
     <fragment
         android:id="@+id/homeFragment"
         android:name="com.example.foodshareapp.ui.home.HomeFragment"
-        android:label="Accueil" >
+        android:label="Accueil">
+
+        <!-- Ajoutez cette action -->
+        <action
+            android:id="@+id/action_homeFragment_to_detailsFragment"
+            app:destination="@id/detailsFragment" />
+        <!-- Conservez votre action existante -->
         <action
             android:id="@+id/action_homeFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/detailsFragment"
+        android:name="com.example.foodshareapp.ui.home.DetailsFragment"
+        android:label="Détails" />
 
     <!-- Carte -->
     <fragment

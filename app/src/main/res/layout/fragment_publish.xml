@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorBackground"
@@ -14,11 +15,36 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:gravity="center"
             android:text="Publier un plat"
             android:textColor="@color/black"
-            android:textSize="24sp"
-            android:gravity="center" />
+            android:textSize="24sp" />
 
+        <!-- Indicateur de progression du formulaire -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:orientation="horizontal">
+
+            <ProgressBar
+                android:id="@+id/formProgressBar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:max="100"
+                android:progress="0" />
+
+            <TextView
+                android:id="@+id/textFormProgress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:text="0/8" />
+        </LinearLayout>
+
+        <!-- Section d'image -->
         <ImageView
             android:id="@+id/imagePreview"
             android:layout_width="match_parent"
@@ -35,12 +61,23 @@
             android:text="Ajouter une photo"
             android:textColor="@color/white" />
 
+        <!-- Section des informations principales -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Informations sur le plat"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <EditText
             android:id="@+id/editTitre"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:hint="Titre du plat"
+            android:layout_marginTop="4dp"
+            android:hint="Titre du plat (obligatoire)"
             android:inputType="text" />
 
         <EditText
@@ -48,56 +85,163 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Description"
+            android:hint="Description (obligatoire)"
             android:inputType="textMultiLine"
             android:minLines="3" />
+
+        <EditText
+            android:id="@+id/editIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:hint="Ingrédients principaux (optionnel)"
+            android:inputType="textMultiLine"
+            android:minLines="2" />
 
         <EditText
             android:id="@+id/editPortions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Nombre de portions"
+            android:hint="Nombre de portions (obligatoire)"
             android:inputType="number" />
+
+        <!-- Section du statut et type -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Type de plat"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioGroupStatut"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radioRestes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Restes" />
+
+            <RadioButton
+                android:id="@+id/radioPrepare"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Plat préparé" />
+        </RadioGroup>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Caractéristiques du plat (optionnel)"
+            android:textStyle="italic" />
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupType"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:chipSpacingHorizontal="8dp"
+            app:singleSelection="false" />
+
+        <!-- Section de la date et heure -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Disponibilité"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <EditText
             android:id="@+id/editExpiration"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_calendar"
+            android:focusable="false"
+            android:hint="Date limite de consommation (obligatoire)" />
+
+        <EditText
+            android:id="@+id/editHeureRecuperation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Date d'expiration (ex: 2025-05-13)"
-            android:inputType="date" />
+            android:clickable="true"
+            android:drawableEnd="@drawable/ic_time"
+            android:focusable="false"
+            android:hint="Heure limite de récupération (obligatoire)" />
+
+        <!-- Section de localisation -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="Localisation"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
         <Button
             android:id="@+id/btnDetectLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Détecter ma position" />
+            android:backgroundTint="@color/colorPrimary"
+            android:text="Détecter ma position"
+            android:textColor="@color/white" />
 
         <EditText
             android:id="@+id/editLocalisation"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:hint="Votre localisation"
-            android:enabled="false" />
+            android:enabled="true"
+            android:hint="Votre localisation (obligatoire)" />
 
-
-        <Button
-            android:id="@+id/btnPublier"
+        <!-- Boutons de soumission -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Publier"
-            android:textColor="@color/white"
-            android:layout_marginTop="16dp"
-            android:backgroundTint="@color/colorSecondary" />
+            android:layout_marginTop="24dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnPreview"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorPrimary"
+                android:text="Prévisualiser" />
+
+            <Button
+                android:id="@+id/btnPublier"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:backgroundTint="@color/colorSecondary"
+                android:text="Publier"
+                android:textColor="@color/white" />
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
             android:layout_gravity="center"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="16dp"
+            android:visibility="gone" />
     </LinearLayout>
 </ScrollView>
