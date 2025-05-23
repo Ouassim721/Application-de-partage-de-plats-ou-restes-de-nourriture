@@ -1,28 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Thème de base -->
-    <style name="Base.Theme.FoodShareApp" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Couleurs principales -->
-        <item name="colorPrimary">@color/colorPrimary</item>  <!-- Orange (#FFA726) -->
-        <item name="colorPrimaryDark">@color/colorPrimary</item> <!-- Même couleur que la status bar -->
-        <item name="colorSecondary">@color/colorSecondary</item> <!-- Rouge (#F44336) -->
+    <style name="Base.Theme.FoodShareApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>    <item name="colorPrimaryDark">@color/colorPrimary</item> <item name="colorSecondary">@color/colorSecondary</item> <item name="colorSurface">@color/white</item> <item name="colorOnSurface">@color/black</item> <item name="android:statusBarColor">@color/colorPrimary</item>
 
-        <!-- Barre de statut -->
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-
-        <!-- Désactivation du dark mode (uniquement si API >= 29) -->
         <item name="android:forceDarkAllowed" tools:targetApi="q">false</item>
 
-        <!-- Autres personnalisations -->
-        <item name="android:windowLightStatusBar">true</item> <!-- Icônes claires dans la barre -->
+        <item name="android:windowLightStatusBar">true</item> <item name="android:windowBackground">@color/colorBackground</item>
     </style>
 
-    <!-- Thème du Splash Screen -->
+    <style name="Theme.FoodShareApp" parent="Base.Theme.FoodShareApp" />
+
     <style name="Theme.MyApp.Splash" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:windowBackground">@color/white</item>
-        <item name="android:statusBarColor">@color/white</item> <!-- Barre blanche pendant le splash -->
+        <item name="android:statusBarColor">@color/white</item>
     </style>
 
-    <!-- Thème principal de l'application -->
-    <style name="Theme.FoodShareApp" parent="Base.Theme.FoodShareApp" />
+    <style name="ShapeAppearanceOverlay.App.CornerSize50Percent" parent="">
+        <item name="cornerSize">50%</item>
+    </style>
 </resources>

@@ -29,6 +29,9 @@ coil-compose = "2.6.0"
 glide = "4.16.0"
 imagepicker = "2.1"
 
+circleimageview = "3.1.0"
+
+
 [plugins]
 android-application = { id = "com.android.application", version = "8.6.1" }  # Mise à jour de 8.4.0 à 8.6.0
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
@@ -105,3 +108,5 @@ junit = { group = "junit", name = "junit", version = "4.13.2" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version = "1.2.1" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version = "3.6.1" }
 androidx-compose-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
+
+circleimageview = { group = "de.hdodenhof", name = "circleimageview", version.ref = "circleimageview" }

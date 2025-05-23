@@ -10,6 +10,12 @@ import com.example.foodshareapp.R
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.databinding.FragmentDetailsBinding
 import com.google.android.material.chip.Chip
+import android.widget.Toast
+import androidx.navigation.fragment.findNavController
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import java.util.UUID
+import androidx.core.os.bundleOf
 
 class DetailsFragment : Fragment() {
 
@@ -35,6 +41,18 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         plat?.let { setupViews(it) }
+        binding.btnContacter.setOnClickListener {
+            plat?.let { platData ->
+                val receiverId = platData.userId
+                val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+                if (currentUserId != null && receiverId.isNotEmpty() && currentUserId != receiverId) {
+                    getOrCreateConversationWithUser(currentUserId, receiverId)
+                } else {
+                    Toast.makeText(requireContext(), "Action impossible", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
     private fun setupViews(plat: Plat) {
@@ -96,4 +114,53 @@ class DetailsFragment : Fragment() {
             }
         }
     }
+    private fun getOrCreateConversationWithUser(currentUserId: String, otherUserId: String) {
+        val db = FirebaseFirestore.getInstance()
+        val conversationsRef = db.collection("conversations")
+
+        // Vérifie si une conversation existe déjà
+        conversationsRef
+            .whereArrayContains("participants", currentUserId)
+            .get()
+            .addOnSuccessListener { querySnapshot ->
+                val existingConversation = querySnapshot.documents.firstOrNull { doc ->
+                    val participants = doc.get("participants") as? List<*>
+                    participants?.contains(otherUserId) == true
+                }
+
+                if (existingConversation != null) {
+                    val conversationId = existingConversation.id
+                    navigateToChat(conversationId)
+                } else {
+                    // Crée une nouvelle conversation
+                    val newConversationId = UUID.randomUUID().toString()
+                    val newConversation = hashMapOf(
+                        "participants" to listOf(currentUserId, otherUserId),
+                        "lastMessage" to "",
+                        "timestamp" to System.currentTimeMillis()
+                    )
+
+                    conversationsRef.document(newConversationId).set(newConversation)
+                        .addOnSuccessListener {
+                            navigateToChat(newConversationId)
+                        }
+                        .addOnFailureListener {
+                            Toast.makeText(requireContext(), "Erreur lors de la création", Toast.LENGTH_SHORT).show()
+                        }
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Erreur de recherche", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+
+    private fun navigateToChat(conversationId: String) {
+        findNavController().navigate(
+            R.id.action_detailsFragment_to_chatFragment,
+            bundleOf("conversationId" to conversationId)
+        )
+    }
+
+
 }

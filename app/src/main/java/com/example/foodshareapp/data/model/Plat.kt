@@ -7,6 +7,7 @@ import java.io.Serializable
 
 @Parcelize
 data class Plat(
+    val id: String = "",
     val titre: String = "",
     val description: String = "",
     val ingredients: String = "",

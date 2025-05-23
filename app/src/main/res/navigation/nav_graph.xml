@@ -10,19 +10,20 @@
         android:name="com.example.foodshareapp.ui.home.HomeFragment"
         android:label="Accueil">
 
-        <!-- Ajoutez cette action -->
         <action
             android:id="@+id/action_homeFragment_to_detailsFragment"
             app:destination="@id/detailsFragment" />
-        <!-- Conservez votre action existante -->
-        <action
-            android:id="@+id/action_homeFragment_to_chatFragment"
-            app:destination="@id/chatFragment" />
     </fragment>
+
+    <!-- Détails -->
     <fragment
         android:id="@+id/detailsFragment"
         android:name="com.example.foodshareapp.ui.home.DetailsFragment"
-        android:label="Détails" />
+        android:label="Détails" >
+        <action
+            android:id="@+id/action_detailsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
 
     <!-- Carte -->
     <fragment
@@ -36,29 +37,34 @@
         android:name="com.example.foodshareapp.ui.publish.PublishFragment"
         android:label="Ajouter" />
 
-    <!-- Messages -->
+    <!-- Messages / Conversations -->
     <fragment
-        android:id="@+id/messagesFragment"
-        android:name="com.example.foodshareapp.ui.messages.MessagesFragment"
-        android:label="Messages">
+        android:id="@+id/conversationsFragment"
+        android:name="com.example.foodshareapp.ui.conversation.ConversationsFragment"
+        android:label="Conversations" >
+
         <action
-            android:id="@+id/action_messagesFragment_to_chatFragment"
+            android:id="@+id/action_conversationsFragment_to_chatFragment"
             app:destination="@id/chatFragment" />
     </fragment>
 
     <!-- Chat -->
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.example.foodshareapp.ui.messages.ChatFragment"
-        android:label="Chat" >
+        android:name="com.example.foodshareapp.ui.conversation.ChatFragment"
+        android:label="Chat">
+
         <argument
-            android:name="receiverId"
-            app:argType="string" />
+            android:name="conversationId"
+            app:argType="string"
+            android:defaultValue="" />
     </fragment>
 
     <!-- Profil -->
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.foodshareapp.ui.profile.ProfileFragment"
-        android:label="Profil" />
+        android:label="Profil" >
+    </fragment>
+
 </navigation>

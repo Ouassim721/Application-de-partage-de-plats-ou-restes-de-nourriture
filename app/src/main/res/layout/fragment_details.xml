@@ -117,6 +117,16 @@
             android:layout_marginTop="16dp"
             android:textSize="16sp"
             tools:text="Ingrédients: tomate, oignon, fromage..." />
+        <Button
+            android:id="@+id/btnContacter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Contacter"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="24dp"
+            android:backgroundTint="@color/colorPrimary"
+            android:textColor="@android:color/white" />
+
 
     </LinearLayout>
 </ScrollView>

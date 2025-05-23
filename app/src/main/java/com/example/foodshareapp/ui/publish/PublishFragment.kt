@@ -542,8 +542,10 @@ class PublishFragment : Fragment() {
     }
 
     private fun savePlatToFirestore(imageUrl: String) {
-        // Créer l'objet Plat avec les données améliorées
+        val platId = db.collection("plats").document().id
+
         val plat = Plat(
+            id = platId,
             titre = editTitre.text.toString().trim(),
             description = editDescription.text.toString().trim(),
             portions = editPortions.text.toString().toIntOrNull() ?: 1,
@@ -560,7 +562,7 @@ class PublishFragment : Fragment() {
             typePlat = getSelectedFoodTypes()
         )
 
-        db.collection("plats").add(plat)
+        db.collection("plats").document(platId).set(plat)
             .addOnSuccessListener {
                 Toast.makeText(
                     requireContext(),

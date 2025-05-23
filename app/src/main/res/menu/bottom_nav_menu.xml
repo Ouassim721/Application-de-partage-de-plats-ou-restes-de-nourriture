@@ -12,9 +12,9 @@
         android:icon="@drawable/ic_round_add"
         android:title="Ajouter"/>
     <item
-        android:id="@+id/messagesFragment"
+        android:id="@+id/conversationsFragment"
         android:icon="@drawable/ic_message"
-        android:title="Message"/>
+        android:title="Conversations"/>
 
     <item
         android:id="@+id/profileFragment"

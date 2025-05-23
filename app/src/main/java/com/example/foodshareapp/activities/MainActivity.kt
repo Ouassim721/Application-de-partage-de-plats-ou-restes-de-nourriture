@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigationView.setupWithNavController(navController)
         binding.bottomNavigationView.setOnItemSelectedListener { item ->
             val protectedFragments = setOf(
-                R.id.messagesFragment,
+                R.id.conversationsFragment,
                 R.id.chatFragment,
                 R.id.profileFragment,
                 R.id.addFragment

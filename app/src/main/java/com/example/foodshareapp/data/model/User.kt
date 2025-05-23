@@ -1,3 +1,4 @@
+// User.kt
 package com.example.foodshareapp.data.model
 
 data class User(
@@ -6,5 +7,8 @@ data class User(
     val name: String = "",
     val city: String = "",
     val profileImageUrl: String = "",
-    val role: String = "user"
+    val bio: String = "", // Added for user's bio
+    val role: String = "user",
+    val dishesOfferedCount: Int = 0, // Added for statistics
+    val dishesReceivedCount: Int = 0 // Added for statistics
 )

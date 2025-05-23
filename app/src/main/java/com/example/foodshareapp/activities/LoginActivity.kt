@@ -38,44 +38,38 @@ class LoginActivity : AppCompatActivity() {
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            if (email.isNotEmpty() && password.isNotEmpty()) {
-                auth.signInWithEmailAndPassword(email, password)
-                    .addOnSuccessListener {
-                        val user = auth.currentUser
-                        if (user != null) {
-                            // Vérifier l’existence du document Firestore
-                            firestore.collection("users").document(user.uid).get()
-                                .addOnSuccessListener { document ->
-                                    if (document.exists()) {
-                                        val userData = document.toObject(User::class.java)
-                                        Log.d("FIREBASE", "User chargé : $userData")
-                                    } else {
-                                        // Créer un document Firestore si inexistant
-                                        val newUser = User(
-                                            uid = user.uid,
-                                            email = user.email ?: "",
-                                            name = "",
-                                            city = ""
-                                        )
-                                        firestore.collection("users").document(user.uid)
-                                            .set(newUser)
-                                    }
+            auth.signInWithEmailAndPassword(email, password)
+                .addOnSuccessListener {
+                    val user = auth.currentUser
+                    if (user != null) {
+                        firestore.collection("users").document(user.uid).get()
+                            .addOnSuccessListener { document ->
+                                val userData = document.toObject(User::class.java)
+                                Log.d("FIREBASE", "User chargé : $userData")
+
+                                val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
+                                sharedPref.edit {
+                                    putBoolean("isLoggedIn", true)
+                                    putString("userRole", userData?.role ?: "user") // Ajout rôle
+                                    apply()
                                 }
-                        }
 
-                        val sharedPref = getSharedPreferences("UserSession", MODE_PRIVATE)
-                        sharedPref.edit {
-                            putBoolean("isLoggedIn", true)
-                            apply()
-                        }
+                                // Redirection selon rôle
+                                if (userData?.role == "admin") {
+                                    startActivity(Intent(this, AdminDashboardActivity::class.java))
+                                } else {
+                                    startActivity(Intent(this, MainActivity::class.java))
+                                }
+                                finish()
+                            }
+                    }
+                }
+                .addOnFailureListener {
+                    Toast.makeText(this, "Connexion échouée : ${it.message}", Toast.LENGTH_SHORT)
+                        .show()
+                }
 
-                        startActivity(Intent(this, MainActivity::class.java))
-                        finish()
-                    }
-                    .addOnFailureListener {
-                        Toast.makeText(this, "Connexion échouée : ${it.message}", Toast.LENGTH_SHORT).show()
-                    }
-            }
         }
     }
 }
+
