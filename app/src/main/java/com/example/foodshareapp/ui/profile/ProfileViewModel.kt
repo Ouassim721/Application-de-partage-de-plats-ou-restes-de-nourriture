@@ -1,6 +1,7 @@
 // com/example/foodshareapp/ui/profile/ProfileViewModel.kt
 package com.example.foodshareapp.ui.profile
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -8,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.data.model.User
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
@@ -75,10 +77,11 @@ class ProfileViewModel : ViewModel() {
                 _sharedDishes.postValue(dishes)
 
                 // Update user's shared dishes count
-                updateUserDishesCount(userId, dishes.size, isShared = true)
+                updateUserDishesCount(userId, isShared = true)
 
             } catch (e: Exception) {
-                _errorMessage.postValue("Erreur lors du chargement des plats partagés: ${e.message}")
+                val errorMsg = "Erreur lors du chargement des plats partagés: ${e.message}"
+                Log.e("FoodShare", errorMsg, e)
                 _sharedDishes.postValue(emptyList())
             }
         }
@@ -101,11 +104,11 @@ class ProfileViewModel : ViewModel() {
                 _recoveredDishes.postValue(dishes)
 
                 // Update user's recovered dishes count
-                updateUserDishesCount(userId, dishes.size, isShared = false)
+                updateUserDishesCount(userId, isShared = true)
 
             } catch (e: Exception) {
                 // Si la requête échoue (peut-être que le champ n'existe pas encore)
-                _errorMessage.postValue("Erreur lors du chargement des plats récupérés: ${e.message}")
+                Log.e("ProfileViewModel", "Impossible de charger les plats: ${e.message}")
                 _recoveredDishes.postValue(emptyList())
 
                 // Alternative: Rechercher dans une collection séparée ou utiliser une autre logique
@@ -117,8 +120,6 @@ class ProfileViewModel : ViewModel() {
     private fun fetchRecoveredDishesAlternative(userId: String) {
         viewModelScope.launch {
             try {
-                // Alternative: Rechercher tous les plats récupérés et filtrer
-                // Cette méthode est moins efficace mais fonctionne si le champ n'existe pas
                 val allRecoveredDishes = firestore.collection("plats")
                     .whereEqualTo("statut", "recuperer")
                     .get()
@@ -127,30 +128,30 @@ class ProfileViewModel : ViewModel() {
                 val userRecoveredDishes = allRecoveredDishes.documents.mapNotNull { document ->
                     document.toObject(Plat::class.java)
                 }.filter { plat ->
-                    // Ici, vous devrez implémenter votre logique pour déterminer
-                    // si ce plat a été récupéré par cet utilisateur
-                    // Par exemple, vérifier dans une collection séparée ou un champ spécifique
+
                     false // Placeholder - à remplacer par votre logique
                 }
 
                 _recoveredDishes.postValue(userRecoveredDishes)
             } catch (e: Exception) {
 
-                _errorMessage.postValue("Impossible de charger les plats récupérés")
+                Log.e("ProfileViewModel", "Impossible de charger les plats: ${e.message}")
                 _recoveredDishes.postValue(emptyList())
             }
         }
     }
 
-    private fun updateUserDishesCount(userId: String, count: Int, isShared: Boolean) {
+    private fun updateUserDishesCount(userId: String, isShared: Boolean) {
         viewModelScope.launch {
             try {
                 val field = if (isShared) "dishesOfferedCount" else "dishesReceivedCount"
+
                 firestore.collection("users").document(userId)
-                    .update(field, count)
+                    .update(field, FieldValue.increment(1)) // Incrémente atomiquement
                     .await()
+
             } catch (e: Exception) {
-                // Ignore silently - this is just for statistics
+                Log.e("ProfileViewModel", "Error updating dish count: ${e.message}")
             }
         }
     }

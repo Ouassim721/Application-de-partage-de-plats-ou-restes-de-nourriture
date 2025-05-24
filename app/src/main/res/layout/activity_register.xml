@@ -4,8 +4,22 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="24dp">
-
+    android:padding="24dp"
+    android:gravity="center_horizontal"
+    >
+    <!-- Logo -->
+    <ImageView
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginBottom="40dp"
+        android:src="@drawable/ic_launcher_foreground"
+        android:contentDescription="@string/app_logo" />
+    <EditText
+        android:id="@+id/nameInput"
+        android:hint="Nom et prénom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
     <EditText
         android:id="@+id/emailInput"
         android:hint="Email"
@@ -26,4 +40,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
+    <!-- Lien de connexion -->
+    <TextView
+        android:id="@+id/loginRedirect"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Vous avez déjà un compte? Connexion"
+        android:textColor="@color/gray_medium"
+        android:layout_marginTop="24dp"
+        android:textSize="16sp"
+        android:padding="8dp"
+        android:textStyle="bold" />
 </LinearLayout>

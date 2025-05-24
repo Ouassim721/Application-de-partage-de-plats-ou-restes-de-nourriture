@@ -1,62 +1,96 @@
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="8dp"
     android:layout_marginVertical="4dp"
-    android:elevation="4dp"
-    android:padding="8dp">
+    android:elevation="2dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="2dp"
+    app:cardUseCompatPadding="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="12dp">
 
-        <!-- Avatar -->
-        <ImageView
+        <!-- Avatar avec bordure circulaire -->
+        <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/avatarImageView"
             android:layout_width="48dp"
             android:layout_height="48dp"
             android:layout_alignParentStart="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_default_avatar" />
+            android:layout_centerVertical="true"
+            android:src="@drawable/ic_default_avatar"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/gray_light" />
 
-        <!-- Nom + dernier message -->
+        <!-- Conteneur principal texte -->
         <LinearLayout
-            android:layout_toEndOf="@id/avatarImageView"
+            android:id="@+id/textContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/avatarImageView"
+            android:layout_toStartOf="@id/timeTextView"
+            android:layout_marginStart="12dp"
+            android:layout_marginEnd="8dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/usernameTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Nom de l'utilisateur"
-                android:textStyle="bold" />
+            <!-- Ligne supérieure (nom + badge) -->
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
+                <TextView
+                    android:id="@+id/usernameTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nom de l'utilisateur"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:ellipsize="end"
+                    android:maxLines="1" />
+
+                <TextView
+                    android:id="@+id/statusBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toEndOf="@id/usernameTextView"
+                    android:layout_marginStart="8dp"
+                    android:layout_centerVertical="true"
+                    android:text="Nouveau"
+                    android:textColor="@android:color/white"
+                    android:background="@drawable/badge_background"
+                    android:paddingHorizontal="6dp"
+                    android:paddingVertical="2dp"
+                    android:textSize="10sp" />
+            </RelativeLayout>
+
+            <!-- Dernier message -->
             <TextView
                 android:id="@+id/lastMessageTextView"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Dernier message..." />
+                android:layout_marginTop="4dp"
+                android:text="Dernier message échangé..."
+                android:textColor="@color/gray_medium"
+                android:textSize="14sp"
+                android:ellipsize="end"
+                android:maxLines="1" />
         </LinearLayout>
 
-        <!-- Heure -->
+        <!-- Heure alignée en haut à droite -->
         <TextView
             android:id="@+id/timeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/textContainer"
             android:text="15:43"
+            android:textColor="@color/gray"
             android:textSize="12sp" />
-
-        <!-- Badge : Nouveau / Confirmé -->
-        <TextView
-            android:id="@+id/statusBadge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nouveau"
-            android:textColor="@android:color/white"
-            android:padding="4dp"
-            android:textSize="10sp" />
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

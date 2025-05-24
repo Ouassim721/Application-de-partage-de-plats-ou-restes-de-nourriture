@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+    <!--Les Permissions-->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-
     <uses-permission
         android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
     <queries>
         <package android:name="com.google.android.gms" />
     </queries>
+    <!--L'Application-->
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -21,10 +24,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FoodShareApp"
         tools:targetApi="31">
+        <!--Meta data pour l'API key de google maps-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyDzBX_svB5ck-4aUfOFkyyTB5yrjEl_SrE" />
-         <activity
+        <!--SplashActivity pour l'écran au lancement de l'application-->
+        <activity
              android:name=".activities.SplashActivity"
              android:exported="true"
              android:theme="@style/Theme.MyApp.Splash">
@@ -33,9 +38,11 @@
                  <category android:name="android.intent.category.LAUNCHER" />
              </intent-filter>
          </activity>
+        <!--L'activité principale MainActivity-->
         <activity
             android:name=".activities.MainActivity"
             android:exported="false" />
+        <!--L'activité de l'adiministration AdminDashboardActivity-->
         <activity
             android:name=".activities.AdminDashboardActivity"
             android:exported="false" />
@@ -49,7 +56,6 @@
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
-
 
     </application>
 

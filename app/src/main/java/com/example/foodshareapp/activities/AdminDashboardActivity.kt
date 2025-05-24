@@ -1,11 +1,16 @@
 package com.example.foodshareapp.activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.foodshareapp.R
 import com.example.foodshareapp.data.model.User
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.databinding.ActivityAdminDashboardBinding
@@ -23,6 +28,11 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val mainRedirect: TextView = findViewById(R.id.mainRedirect)
+        mainRedirect.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        }
         binding = ActivityAdminDashboardBinding.inflate(layoutInflater)
         setContentView(binding.root)
 

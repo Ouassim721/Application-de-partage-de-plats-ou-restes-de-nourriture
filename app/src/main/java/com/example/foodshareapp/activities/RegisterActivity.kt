@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.foodshareapp.R
@@ -22,22 +23,28 @@ class RegisterActivity : AppCompatActivity() {
         auth = FirebaseAuth.getInstance()
         firestore = FirebaseFirestore.getInstance()
 
+        val nameInput = findViewById<EditText>(R.id.nameInput)
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passwordInput = findViewById<EditText>(R.id.passwordInput)
         val registerBtn = findViewById<Button>(R.id.registerButton)
-
+        val loginRedirect: TextView = findViewById(R.id.loginRedirect)
+        loginRedirect.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
         registerBtn.setOnClickListener {
+            val name = nameInput.text.toString().trim()
             val email = emailInput.text.toString().trim()
             val password = passwordInput.text.toString().trim()
 
-            if (email.isNotEmpty() && password.length >= 6) {
+            if (email.isNotEmpty() && password.length >= 6 && name.isNotEmpty()) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnSuccessListener {
                         val uid = auth.currentUser?.uid ?: return@addOnSuccessListener
                         val newUser = User(
                             uid = uid,
+                            name = name,
                             email = email,
-                            name = "",
                             city = ""
                         )
                         firestore.collection("users").document(uid)

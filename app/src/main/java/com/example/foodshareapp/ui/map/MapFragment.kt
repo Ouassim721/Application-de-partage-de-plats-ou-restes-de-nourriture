@@ -17,17 +17,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.DatabaseReference
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var googleMap: GoogleMap
-    private lateinit var database: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -47,55 +41,41 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
-        // Activer la localisation (si permission OK)
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        // Afficher la localisation de l'utilisateur si la permission est accordée
+        if (ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             googleMap.isMyLocationEnabled = true
         }
 
-        database = FirebaseDatabase.getInstance().getReference("plats")
+        // Récupérer les plats depuis Firestore
+        FirebaseFirestore.getInstance().collection("plats")
+            .get()
+            .addOnSuccessListener { result ->
+                var isFirstPlat = true
 
-        database.addValueEventListener(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                for (platSnapshot in snapshot.children) {
-                    val plat = platSnapshot.getValue(Plat::class.java)
-                    plat?.let {
-                        val location = LatLng(it.latitude, it.longitude)
+                for (document in result) {
+                    val plat = document.toObject(Plat::class.java)
+                    if (plat.latitude != 0.0 && plat.longitude != 0.0) {
+                        val position = LatLng(plat.latitude, plat.longitude)
                         googleMap.addMarker(
                             MarkerOptions()
-                                .position(location)
-                                .title(it.titre)
-                                .snippet(it.description)
+                                .position(position)
+                                .title(plat.titre)
+                                .snippet(plat.description)
                         )
+
+                        if (isFirstPlat) {
+                            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 12f))
+                            isFirstPlat = false
+                        }
                     }
                 }
             }
-
-            override fun onCancelled(error: DatabaseError) {
-                Log.e("MapFragment", "Erreur Firebase : ${error.message}")
+            .addOnFailureListener { e ->
+                Log.e("MapFragment", "Erreur Firestore: ${e.localizedMessage}")
             }
-        })
     }
-    fun onDataChange(snapshot: DataSnapshot) {
-        var isFirstPlat = true // pour centrer la carte une seule fois
-
-        for (platSnapshot in snapshot.children) {
-            val plat = platSnapshot.getValue(Plat::class.java)
-            plat?.let {
-                val location = LatLng(it.latitude, it.longitude)
-                googleMap.addMarker(
-                    MarkerOptions()
-                        .position(location)
-                        .title(it.titre)
-                        .snippet(it.description)
-                )
-
-                // Centrer la carte sur le premier plat seulement
-                if (isFirstPlat) {
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 12f))
-                    isFirstPlat = false
-                }
-            }
-        }
-    }
-
 }
