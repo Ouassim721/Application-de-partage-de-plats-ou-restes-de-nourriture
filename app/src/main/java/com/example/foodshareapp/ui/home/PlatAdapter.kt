@@ -61,11 +61,6 @@ class PlatAdapter(
         fun bind(plat: Plat, userLocation: Location?) {
             titrePlat.text = plat.titre
             descriptionPlat.text = plat.description
-
-            // Formater la date d'expiration (assumant que plat.expiration est une date lisible ou un timestamp)
-            // Si plat.expiration est une String, assurez-vous qu'elle est dans un format que vous pouvez parser.
-            // Pour l'exemple, supposons qu'elle soit au format "yyyy-MM-dd HH:mm"
-            // Adaptez si plat.expiration est un Timestamp ou autre.
             try {
                 val expirationDate = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault()).parse(plat.expiration)
                 val now = Date()

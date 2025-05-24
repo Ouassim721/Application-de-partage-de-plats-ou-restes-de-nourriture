@@ -1,12 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- res/layout/fragment_profile.xml -->
+<?xml version="1.0" encoding="utf-8"?><!-- res/layout/fragment_profile.xml -->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/colorBackground">
+    android:background="@color/colorBackground"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -48,8 +47,8 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                         <de.hdodenhof.circleimageview.CircleImageView
                             android:id="@+id/profileImage"
@@ -57,8 +56,8 @@
                             android:layout_height="80dp"
                             android:layout_marginEnd="16dp"
                             android:src="@drawable/ic_default_avatar"
-                            app:civ_border_width="2dp"
-                            app:civ_border_color="@color/colorPrimary" />
+                            app:civ_border_color="@color/colorPrimary"
+                            app:civ_border_width="2dp" />
 
                         <LinearLayout
                             android:layout_width="0dp"
@@ -70,41 +69,33 @@
                                 android:id="@+id/userName"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/black"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/black"
                                 tools:text="Jean Dupont" />
 
                             <TextView
                                 android:id="@+id/userEmail"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="14sp"
-                                android:textColor="@color/gray"
                                 android:layout_marginTop="4dp"
+                                android:textColor="@color/gray"
+                                android:textSize="14sp"
                                 tools:text="jean.dupont@email.com" />
 
                             <TextView
                                 android:id="@+id/userCity"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:textSize="14sp"
-                                android:textColor="@color/gray"
                                 android:layout_marginTop="2dp"
                                 android:drawableStart="@drawable/ic_location"
                                 android:drawablePadding="4dp"
                                 android:gravity="center_vertical"
+                                android:textColor="@color/gray"
+                                android:textSize="14sp"
                                 tools:text="Paris, France" />
 
                         </LinearLayout>
-
-                        <Button
-                            android:id="@+id/editProfileButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Éditer"
-                            android:textSize="12sp"
-                            style="@style/Widget.Material3.Button.OutlinedButton" />
 
                     </LinearLayout>
 
@@ -114,9 +105,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
-                        android:textSize="14sp"
-                        android:textColor="@color/colorBrown"
                         android:lineSpacingExtra="2dp"
+                        android:textColor="@color/colorBrown"
+                        android:textSize="14sp"
                         tools:text="Passionné de cuisine et de partage, j'aime créer de nouveaux plats et éviter le gaspillage alimentaire." />
 
                     <!-- Statistics Row -->
@@ -131,24 +122,24 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/dishesOfferedCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/colorPrimary"
                                 android:textSize="24sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/colorPrimary"
                                 tools:text="15" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Plats partagés"
-                                android:textSize="12sp"
-                                android:textColor="@color/gray" />
+                                android:textColor="@color/gray"
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
@@ -156,28 +147,36 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:gravity="center"
+                            android:orientation="vertical">
 
                             <TextView
                                 android:id="@+id/dishesRecoveredCount"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
+                                android:textColor="@color/colorSecondary"
                                 android:textSize="24sp"
                                 android:textStyle="bold"
-                                android:textColor="@color/colorSecondary"
                                 tools:text="8" />
 
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Plats récupérés"
-                                android:textSize="12sp"
-                                android:textColor="@color/gray" />
+                                android:textColor="@color/gray"
+                                android:textSize="12sp" />
 
                         </LinearLayout>
 
                     </LinearLayout>
+                    <Button
+                        android:id="@+id/adminDashboardButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="Admin Dashboard"
+                        android:visibility="gone"
+                        />
 
                 </LinearLayout>
 
@@ -200,25 +199,25 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginBottom="12dp"
                         android:text="Paramètres"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
                         android:textColor="@color/black"
-                        android:layout_marginBottom="12dp" />
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <!-- Notification Switch -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
                         android:gravity="center_vertical"
+                        android:orientation="horizontal"
                         android:paddingVertical="8dp">
 
                         <ImageView
                             android:layout_width="24dp"
                             android:layout_height="24dp"
-                            android:src="@drawable/ic_notification"
                             android:layout_marginEnd="12dp"
+                            android:src="@drawable/ic_notification"
                             app:tint="@color/gray" />
 
                         <TextView
@@ -226,8 +225,8 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:text="Notifications"
-                            android:textSize="16sp"
-                            android:textColor="@color/black" />
+                            android:textColor="@color/black"
+                            android:textSize="16sp" />
 
                         <androidx.appcompat.widget.SwitchCompat
                             android:id="@+id/notificationSwitch"
@@ -243,9 +242,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/colorTertiary"
                         android:text="Se déconnecter"
                         android:textColor="@color/white"
-                        android:backgroundTint="@color/colorTertiary"
                         app:icon="@drawable/ic_logout"
                         app:iconGravity="textStart" />
 
@@ -270,35 +269,35 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Mes plats partagés"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
                         android:layout_marginBottom="12dp"
                         android:drawableStart="@drawable/ic_send"
                         android:drawablePadding="8dp"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="Mes plats partagés"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvSharedDishes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        tools:listitem="@layout/item_dish_history"
-                        tools:itemCount="3" />
+                        tools:itemCount="3"
+                        tools:listitem="@layout/item_dish_history" />
 
                     <TextView
                         android:id="@+id/tvNoSharedDishes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aucun plat partagé pour le moment"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray"
+                        android:drawableTop="@drawable/ic_pizza_slice"
+                        android:drawablePadding="8dp"
                         android:gravity="center"
                         android:padding="20dp"
-                        android:visibility="gone"
-                        android:drawableTop="@drawable/ic_pizza_slice"
-                        android:drawablePadding="8dp" />
+                        android:text="Aucun plat partagé pour le moment"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 
@@ -321,35 +320,35 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Mes plats récupérés"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
                         android:layout_marginBottom="12dp"
                         android:drawableStart="@drawable/ic_status_recovered"
                         android:drawablePadding="8dp"
-                        android:gravity="center_vertical" />
+                        android:gravity="center_vertical"
+                        android:text="Mes plats récupérés"
+                        android:textColor="@color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
 
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/rvRecoveredDishes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:nestedScrollingEnabled="false"
-                        tools:listitem="@layout/item_dish_history"
-                        tools:itemCount="2" />
+                        tools:itemCount="2"
+                        tools:listitem="@layout/item_dish_history" />
 
                     <TextView
                         android:id="@+id/tvNoRecoveredDishes"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Aucun plat récupéré pour le moment"
-                        android:textSize="14sp"
-                        android:textColor="@color/gray"
+                        android:drawableTop="@drawable/ic_status_expired"
+                        android:drawablePadding="8dp"
                         android:gravity="center"
                         android:padding="20dp"
-                        android:visibility="gone"
-                        android:drawableTop="@drawable/ic_status_expired"
-                        android:drawablePadding="8dp" />
+                        android:text="Aucun plat récupéré pour le moment"
+                        android:textColor="@color/gray"
+                        android:textSize="14sp"
+                        android:visibility="gone" />
 
                 </LinearLayout>
 

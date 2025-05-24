@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.databinding.ItemAdminPlatBinding
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class AdminPlatAdapter(
     private val onDeletePlat: (Plat) -> Unit
@@ -37,9 +39,13 @@ class AdminPlatAdapter(
 
         fun bind(plat: Plat) {
             with(binding) {
-                platTitle.text = plat.titre ?: "Titre non disponible"
-                platCity.text = plat.localisation ?: "Localisation non disponible"
-                platDate.text = plat.datePublication as CharSequence?
+                platTitle.text = plat.titre.ifEmpty { "Titre non disponible" }
+                platCity.text = plat.localisation.ifEmpty { "Localisation non disponible" }
+
+                // Conversion du Timestamp vers un format lisible
+                val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                val dateStr = formatter.format(plat.datePublication.toDate())
+                platDate.text = dateStr
 
                 btnDeletePlat.setOnClickListener {
                     onDeletePlat(plat)

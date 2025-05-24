@@ -8,17 +8,21 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.foodshareapp.R
+import com.example.foodshareapp.activities.AdminDashboardActivity
 import com.example.foodshareapp.activities.LoginActivity
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.data.model.User
 import com.example.foodshareapp.databinding.FragmentProfileBinding
 import com.example.foodshareapp.ui.adapter.DishHistoryAdapter
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
 class ProfileFragment : Fragment() {
 
@@ -39,7 +43,8 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        val adminDashboardButton = view.findViewById<Button>(R.id.adminDashboardButton)
+        val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
         setupRecyclerViews()
@@ -48,6 +53,20 @@ class ProfileFragment : Fragment() {
 
         // Show loading state initially
         showLoadingState(true)
+        if (currentUserId != null) {
+            FirebaseFirestore.getInstance().collection("users").document(currentUserId)
+                .get()
+                .addOnSuccessListener { document ->
+                    val role = document.getString("role")
+                    if (role == "admin") {
+                        adminDashboardButton.visibility = View.VISIBLE
+                        adminDashboardButton.setOnClickListener {
+                            val intent = Intent(requireContext(), AdminDashboardActivity::class.java)
+                            startActivity(intent)
+                        }
+                    }
+                }
+        }
     }
 
     private fun setupRecyclerViews() {
@@ -146,11 +165,6 @@ class ProfileFragment : Fragment() {
         binding.logoutButton.setOnClickListener {
             profileViewModel.logout()
             logout(requireContext())
-        }
-
-        binding.editProfileButton.setOnClickListener {
-            Toast.makeText(context, "Modification du profil (à implémenter)", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to edit profile screen
         }
     }
 
