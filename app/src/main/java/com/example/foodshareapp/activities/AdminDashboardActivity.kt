@@ -28,13 +28,14 @@ class AdminDashboardActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val mainRedirect: TextView = findViewById(R.id.mainRedirect)
-        mainRedirect.setOnClickListener {
+
+        binding = ActivityAdminDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.mainRedirect.setOnClickListener {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
-        binding = ActivityAdminDashboardBinding.inflate(layoutInflater)
-        setContentView(binding.root)
 
         firestore = FirebaseFirestore.getInstance()
         setupToolbar()
@@ -42,6 +43,7 @@ class AdminDashboardActivity : AppCompatActivity() {
         loadStats()
         setupListeners()
     }
+
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)

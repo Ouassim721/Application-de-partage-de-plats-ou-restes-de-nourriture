@@ -31,7 +31,6 @@ class ConversationsViewModel : ViewModel() {
             .whereArrayContains("participants", currentUserId)
             .addSnapshotListener { snapshots, error ->
                 if (error != null) {
-                    // log error
                     return@addSnapshotListener
                 }
 
