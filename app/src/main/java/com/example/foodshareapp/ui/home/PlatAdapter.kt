@@ -135,7 +135,6 @@ class PlatAdapter(
                         "Végétarien" -> R.color.colorTertiary
                         "Sucré" -> R.color.colorBrown
                         "Salé" -> R.color.colorPrimary
-                        "Halal" -> R.color.gray // Nouvelle couleur
                         else -> R.color.gray_medium // Couleur par défaut
                     }
                     chip.setChipBackgroundColorResource(chipColor)

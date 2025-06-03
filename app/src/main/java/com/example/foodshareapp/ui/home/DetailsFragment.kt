@@ -45,16 +45,33 @@ class DetailsFragment : Fragment() {
             plat?.let { platData ->
                 val receiverId = platData.userId
                 val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+                val updatedPlat = platData.copy(reserve = true)
 
                 if (currentUserId != null && receiverId.isNotEmpty() && currentUserId != receiverId) {
                     getOrCreateConversationWithUser(currentUserId, receiverId)
+                    updatePlatInFirestore(updatedPlat)
+
                 } else {
                     Toast.makeText(requireContext(), "Action impossible", Toast.LENGTH_SHORT).show()
                 }
             }
         }
     }
+    private fun updatePlatInFirestore(plat: Plat) {
+        val db = FirebaseFirestore.getInstance()
 
+        db.collection("plats")
+            .document(plat.id)
+            .update("reserve", true)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Plat réservé avec succès", Toast.LENGTH_SHORT).show()
+                plat.reserve = true
+                binding.reserveBadge.visibility = View.VISIBLE
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Erreur lors de la réservation: ${e.message}", Toast.LENGTH_SHORT).show()
+            }
+    }
     private fun setupViews(plat: Plat) {
         with(binding) {
             titrePlat.text = plat.titre
@@ -63,6 +80,10 @@ class DetailsFragment : Fragment() {
             localisationPlat.text = plat.localisation
             portionsPlat.text = getString(R.string.portions_format, plat.portions)
             expirationPlat.text = plat.expiration
+            val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+            val isOwner = currentUserId == plat.userId
+
+            btnContacter.visibility = if (isOwner || plat.reserve) View.GONE else View.VISIBLE
 
             if (plat.imageUrl.isNotEmpty()) {
                 Glide.with(requireContext())
@@ -83,7 +104,6 @@ class DetailsFragment : Fragment() {
                     "Végétarien" -> R.color.colorTertiary
                     "Sucré" -> R.color.colorBrown
                     "Salé" -> R.color.colorPrimary
-                    "Halal" -> R.color.gray
                     else -> R.color.gray_medium
                 }
                 addChip(chipGroupTypePlat, type, colorRes)
@@ -117,40 +137,53 @@ class DetailsFragment : Fragment() {
     private fun getOrCreateConversationWithUser(currentUserId: String, otherUserId: String) {
         val db = FirebaseFirestore.getInstance()
         val conversationsRef = db.collection("conversations")
+        val usersRef = db.collection("users")
 
-        // Vérifie si une conversation existe déjà
-        conversationsRef
-            .whereArrayContains("participants", currentUserId)
-            .get()
-            .addOnSuccessListener { querySnapshot ->
-                val existingConversation = querySnapshot.documents.firstOrNull { doc ->
-                    val participants = doc.get("participants") as? List<*>
-                    participants?.contains(otherUserId) == true
-                }
+        // D'abord récupérer le nom de l'autre utilisateur
+        usersRef.document(otherUserId).get()
+            .addOnSuccessListener { userDoc ->
+                val otherUserName = userDoc.getString("username") ?: "Utilisateur"
 
-                if (existingConversation != null) {
-                    val conversationId = existingConversation.id
-                    navigateToChat(conversationId)
-                } else {
-                    // Crée une nouvelle conversation
-                    val newConversationId = UUID.randomUUID().toString()
-                    val newConversation = hashMapOf(
-                        "participants" to listOf(currentUserId, otherUserId),
-                        "lastMessage" to "",
-                        "timestamp" to System.currentTimeMillis()
-                    )
-
-                    conversationsRef.document(newConversationId).set(newConversation)
-                        .addOnSuccessListener {
-                            navigateToChat(newConversationId)
+                // Ensuite vérifier si une conversation existe
+                conversationsRef
+                    .whereArrayContains("participants", currentUserId)
+                    .get()
+                    .addOnSuccessListener { querySnapshot ->
+                        val existingConversation = querySnapshot.documents.firstOrNull { doc ->
+                            val participants = doc.get("participants") as? List<*>
+                            participants?.contains(otherUserId) == true
                         }
-                        .addOnFailureListener {
-                            Toast.makeText(requireContext(), "Erreur lors de la création", Toast.LENGTH_SHORT).show()
+
+                        if (existingConversation != null) {
+                            val conversationId = existingConversation.id
+                            navigateToChat(conversationId)
+                        } else {
+                            // Crée une nouvelle conversation avec le username
+                            val newConversationId = UUID.randomUUID().toString()
+                            val newConversation = hashMapOf(
+                                "participants" to listOf(currentUserId, otherUserId),
+                                "username" to otherUserName, // Ajout du nom d'utilisateur
+                                "lastMessage" to "Conversation créée",
+                                "timestamp" to System.currentTimeMillis(),
+                                "isUnread" to true,
+                                "status" to "NEW"
+                            )
+
+                            conversationsRef.document(newConversationId).set(newConversation)
+                                .addOnSuccessListener {
+                                    navigateToChat(newConversationId)
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(requireContext(), "Erreur lors de la création", Toast.LENGTH_SHORT).show()
+                                }
                         }
-                }
+                    }
+                    .addOnFailureListener {
+                        Toast.makeText(requireContext(), "Erreur de recherche", Toast.LENGTH_SHORT).show()
+                    }
             }
             .addOnFailureListener {
-                Toast.makeText(requireContext(), "Erreur de recherche", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Impossible de récupérer les infos utilisateur", Toast.LENGTH_SHORT).show()
             }
     }
 

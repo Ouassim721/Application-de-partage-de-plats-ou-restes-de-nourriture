@@ -1,8 +1,8 @@
-// com/example/foodshareapp/ui/profile/ProfileFragment.kt
 package com.example.foodshareapp.ui.profile
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -23,11 +24,13 @@ import com.example.foodshareapp.databinding.FragmentProfileBinding
 import com.example.foodshareapp.ui.adapter.DishHistoryAdapter
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 class ProfileFragment : Fragment() {
 
+
     private var _binding: FragmentProfileBinding? = null
-    private val binding get() = _binding!!
+    private val binding get() = _binding ?: throw IllegalStateException("FragmentProfileBinding is null")
 
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var sharedDishesAdapter: DishHistoryAdapter
@@ -43,49 +46,43 @@ class ProfileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val adminDashboardButton = view.findViewById<Button>(R.id.adminDashboardButton)
         val currentUserId = FirebaseAuth.getInstance().currentUser?.uid
+
+        if (currentUserId == null) {
+            handleUserNotLoggedIn()
+            return
+        }
+
         profileViewModel = ViewModelProvider(this)[ProfileViewModel::class.java]
 
         setupRecyclerViews()
         observeProfileData()
         setupClickListeners()
-
-        // Show loading state initially
         showLoadingState(true)
-        if (currentUserId != null) {
-            FirebaseFirestore.getInstance().collection("users").document(currentUserId)
-                .get()
-                .addOnSuccessListener { document ->
-                    val role = document.getString("role")
-                    if (role == "admin") {
-                        adminDashboardButton.visibility = View.VISIBLE
-                        adminDashboardButton.setOnClickListener {
-                            val intent = Intent(requireContext(), AdminDashboardActivity::class.java)
-                            startActivity(intent)
-                        }
-                    }
-                }
+
+        profileViewModel.checkIfUserIsAdmin(currentUserId)
+        binding.profileImage.setOnClickListener {
+            val intent = Intent(Intent.ACTION_GET_CONTENT)
+            intent.type = "image/*"
+            startActivityForResult(intent, REQUEST_CODE_IMAGE_PICK)
         }
+
     }
 
     private fun setupRecyclerViews() {
-        // Setup for Shared Dishes
         sharedDishesAdapter = DishHistoryAdapter { plat ->
-            // Handle click on shared dish item
-            Toast.makeText(context, "Plat partagé: ${plat.titre}", Toast.LENGTH_SHORT).show()
-            // TODO: Navigate to dish detail if needed
+            if (isAdded) Toast.makeText(requireContext(), "Plat partagé: ${plat.titre}", Toast.LENGTH_SHORT).show()
         }
+
         binding.rvSharedDishes.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = sharedDishesAdapter
         }
 
-        // Setup for Recovered Dishes
         recoveredDishesAdapter = DishHistoryAdapter { plat ->
-            // Handle click on recovered dish item
-            Toast.makeText(context, "Plat récupéré: ${plat.titre}", Toast.LENGTH_SHORT).show()
+            if (isAdded) Toast.makeText(requireContext(), "Plat récupéré: ${plat.titre}", Toast.LENGTH_SHORT).show()
         }
+
         binding.rvRecoveredDishes.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = recoveredDishesAdapter
@@ -93,38 +90,44 @@ class ProfileFragment : Fragment() {
     }
 
     private fun observeProfileData() {
-        // Observe current user data
         profileViewModel.currentUser.observe(viewLifecycleOwner) { user ->
             showLoadingState(false)
             user?.let {
                 updateUserProfileUI(it)
-                // Fetch dishes after user data is available
                 profileViewModel.fetchUserSharedDishes(it.uid)
                 profileViewModel.fetchUserRecoveredDishes(it.uid)
             } ?: run {
-                // User is null, perhaps not logged in
                 Log.d("ProfileFragment", "Utilisateur non connecté")
                 handleUserNotLoggedIn()
             }
         }
 
-        // Observe shared dishes
         profileViewModel.sharedDishes.observe(viewLifecycleOwner) { dishes ->
             sharedDishesAdapter.submitList(dishes)
             updateEmptyState(dishes, binding.tvNoSharedDishes, binding.rvSharedDishes)
         }
 
-        // Observe recovered dishes
         profileViewModel.recoveredDishes.observe(viewLifecycleOwner) { dishes ->
             recoveredDishesAdapter.submitList(dishes)
             updateEmptyState(dishes, binding.tvNoRecoveredDishes, binding.rvRecoveredDishes)
         }
 
-        // Observe error messages
         profileViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             message?.let {
-                Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+                if (isAdded) {
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_LONG).show()
+                    Log.e("ProfileFragment", "Erreur : $it")
+                }
                 profileViewModel.clearErrorMessage()
+            }
+        }
+
+        profileViewModel.isAdmin.observe(viewLifecycleOwner) { isAdmin ->
+            if (isAdmin) {
+                binding.adminDashboardButton.visibility = View.VISIBLE
+                binding.adminDashboardButton.setOnClickListener {
+                    startActivity(Intent(requireContext(), AdminDashboardActivity::class.java))
+                }
             }
         }
     }
@@ -139,7 +142,6 @@ class ProfileFragment : Fragment() {
             dishesOfferedCount.text = user.dishesOfferedCount.toString()
             dishesRecoveredCount.text = user.dishesReceivedCount.toString()
 
-            // Load profile image using Glide
             if (user.profileImageUrl.isNotEmpty()) {
                 Glide.with(this@ProfileFragment)
                     .load(user.profileImageUrl)
@@ -155,11 +157,11 @@ class ProfileFragment : Fragment() {
 
     private fun setupClickListeners() {
         binding.notificationSwitch.setOnCheckedChangeListener { _, isChecked ->
-            val sharedPref = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
+            val sharedPref = requireContext().getSharedPreferences(USER_PREFS, Context.MODE_PRIVATE)
             sharedPref.edit().putBoolean("notifications_enabled", isChecked).apply()
 
             val message = if (isChecked) "Notifications activées" else "Notifications désactivées"
-            Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+            if (isAdded) Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         }
 
         binding.logoutButton.setOnClickListener {
@@ -174,44 +176,79 @@ class ProfileFragment : Fragment() {
     }
 
     private fun updateEmptyState(dishes: List<Plat>, emptyTextView: View, recyclerView: View) {
-        if (dishes.isEmpty()) {
-            emptyTextView.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-        } else {
-            emptyTextView.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-        }
+        emptyTextView.visibility = if (dishes.isEmpty()) View.VISIBLE else View.GONE
+        recyclerView.visibility = if (dishes.isEmpty()) View.GONE else View.VISIBLE
     }
 
     private fun handleUserNotLoggedIn() {
-        Toast.makeText(context, "Vous devez être connecté pour accéder au profil", Toast.LENGTH_LONG).show()
+        if (!isAdded) return
+        Toast.makeText(requireContext(), "Vous devez être connecté pour accéder au profil", Toast.LENGTH_LONG).show()
         logout(requireContext())
     }
 
     private fun logout(context: Context) {
-        // Clear shared preferences
-        val sharedPref = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE)
-        sharedPref.edit().clear().apply()
+        context.getSharedPreferences(USER_SESSION, Context.MODE_PRIVATE)
+            .edit().clear().apply()
 
-        // Navigate to login activity
         val intent = Intent(context, LoginActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         context.startActivity(intent)
-
-        // Finish current activity if it's an activity
         activity?.finish()
     }
 
     override fun onResume() {
         super.onResume()
-        // Load notification preference
-        val sharedPref = requireContext().getSharedPreferences("UserPrefs", Context.MODE_PRIVATE)
-        val notificationsEnabled = sharedPref.getBoolean("notifications_enabled", true)
-        binding.notificationSwitch.isChecked = notificationsEnabled
+        val sharedPref = requireContext().getSharedPreferences(USER_PREFS, Context.MODE_PRIVATE)
+        binding.notificationSwitch.isChecked = sharedPref.getBoolean("notifications_enabled", true)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
     }
+    private fun uploadImageToFirebaseStorage(imageUri: Uri) {
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+        val storageRef = FirebaseStorage.getInstance().reference.child("profile_images/$uid.jpg")
+
+        storageRef.putFile(imageUri)
+            .addOnSuccessListener {
+                storageRef.downloadUrl.addOnSuccessListener { uri ->
+                    val imageUrl = uri.toString()
+                    updateUserProfileImageUrlInFirestore(uid, imageUrl)
+                }
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Échec de l'upload de la photo", Toast.LENGTH_SHORT).show()
+            }
+    }
+    @Deprecated("Deprecated in Java")
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_CODE_IMAGE_PICK && resultCode == AppCompatActivity.RESULT_OK) {
+            val imageUri = data?.data
+            imageUri?.let {
+                uploadImageToFirebaseStorage(it)
+            }
+        }
+    }
+    private fun updateUserProfileImageUrlInFirestore(uid: String, imageUrl: String) {
+        FirebaseFirestore.getInstance().collection("users")
+            .document(uid)
+            .update("profileImageUrl", imageUrl)
+            .addOnSuccessListener {
+                Toast.makeText(requireContext(), "Photo mise à jour", Toast.LENGTH_SHORT).show()
+                profileViewModel.refreshUserData()
+            }
+            .addOnFailureListener {
+                Toast.makeText(requireContext(), "Erreur lors de la mise à jour", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    companion object {
+        private const val USER_PREFS = "UserPrefs"
+        private const val USER_SESSION = "UserSession"
+        const val REQUEST_CODE_IMAGE_PICK = 1001
+    }
+
+
 }

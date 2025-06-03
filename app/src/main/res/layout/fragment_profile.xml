@@ -100,7 +100,7 @@
                     </LinearLayout>
 
                     <!-- Bio Section -->
-                    <TextView
+             <TextView
                         android:id="@+id/userBio"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

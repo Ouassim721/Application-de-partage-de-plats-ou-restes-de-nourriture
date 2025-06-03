@@ -1,4 +1,3 @@
-// com/example/foodshareapp/ui/profile/ProfileViewModel.kt
 package com.example.foodshareapp.ui.profile
 
 import android.util.Log
@@ -9,7 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.foodshareapp.data.model.Plat
 import com.example.foodshareapp.data.model.User
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import kotlinx.coroutines.launch
@@ -32,6 +30,8 @@ class ProfileViewModel : ViewModel() {
     private val _errorMessage = MutableLiveData<String?>()
     val errorMessage: LiveData<String?> = _errorMessage
 
+    private val _isAdmin = MutableLiveData<Boolean>()
+    val isAdmin: LiveData<Boolean> = _isAdmin
     init {
         fetchCurrentUser()
     }
@@ -55,7 +55,7 @@ class ProfileViewModel : ViewModel() {
                 }
             }
         } else {
-            _currentUser.postValue(null) // No user logged in
+            _currentUser.postValue(null) // Aucun utilisateur connecté
         }
     }
 
@@ -69,19 +69,13 @@ class ProfileViewModel : ViewModel() {
                     .await()
 
                 val dishes = dishesCollection.documents.mapNotNull { document ->
-                    document.toObject(Plat::class.java)?.let { plat ->
-                        // Ensure we have the document ID if needed
-                        plat.copy()
-                    }
+                    document.toObject(Plat::class.java)
                 }
+
                 _sharedDishes.postValue(dishes)
 
-                // Update user's shared dishes count
-                updateUserDishesCount(userId, isShared = true)
-
             } catch (e: Exception) {
-                val errorMsg = "Erreur lors du chargement des plats partagés: ${e.message}"
-                Log.e("FoodShare", errorMsg, e)
+                Log.e("ProfileViewModel", "Erreur lors du chargement des plats partagés: ${e.message}")
                 _sharedDishes.postValue(emptyList())
             }
         }
@@ -90,7 +84,6 @@ class ProfileViewModel : ViewModel() {
     fun fetchUserRecoveredDishes(userId: String) {
         viewModelScope.launch {
             try {
-                // Option 1: Si vous avez un champ "recoveredByUserId" dans Plat
                 val dishesCollection = firestore.collection("plats")
                     .whereEqualTo("recoveredByUserId", userId)
                     .whereEqualTo("statut", "recuperer")
@@ -101,59 +94,25 @@ class ProfileViewModel : ViewModel() {
                 val dishes = dishesCollection.documents.mapNotNull { document ->
                     document.toObject(Plat::class.java)
                 }
+
                 _recoveredDishes.postValue(dishes)
 
-                // Update user's recovered dishes count
-                updateUserDishesCount(userId, isShared = true)
-
             } catch (e: Exception) {
-                // Si la requête échoue (peut-être que le champ n'existe pas encore)
-                Log.e("ProfileViewModel", "Impossible de charger les plats: ${e.message}")
-                _recoveredDishes.postValue(emptyList())
-
-                // Alternative: Rechercher dans une collection séparée ou utiliser une autre logique
-                fetchRecoveredDishesAlternative(userId)
-            }
-        }
-    }
-
-    private fun fetchRecoveredDishesAlternative(userId: String) {
-        viewModelScope.launch {
-            try {
-                val allRecoveredDishes = firestore.collection("plats")
-                    .whereEqualTo("statut", "recuperer")
-                    .get()
-                    .await()
-
-                val userRecoveredDishes = allRecoveredDishes.documents.mapNotNull { document ->
-                    document.toObject(Plat::class.java)
-                }.filter { plat ->
-
-                    false // Placeholder - à remplacer par votre logique
-                }
-
-                _recoveredDishes.postValue(userRecoveredDishes)
-            } catch (e: Exception) {
-
-                Log.e("ProfileViewModel", "Impossible de charger les plats: ${e.message}")
+                Log.e("ProfileViewModel", "Erreur lors du chargement des plats récupérés: ${e.message}")
                 _recoveredDishes.postValue(emptyList())
             }
         }
     }
 
-    private fun updateUserDishesCount(userId: String, isShared: Boolean) {
-        viewModelScope.launch {
-            try {
-                val field = if (isShared) "dishesOfferedCount" else "dishesReceivedCount"
-
-                firestore.collection("users").document(userId)
-                    .update(field, FieldValue.increment(1)) // Incrémente atomiquement
-                    .await()
-
-            } catch (e: Exception) {
-                Log.e("ProfileViewModel", "Error updating dish count: ${e.message}")
+    fun checkIfUserIsAdmin(uid: String) {
+        FirebaseFirestore.getInstance().collection("users").document(uid)
+            .get()
+            .addOnSuccessListener { document ->
+                _isAdmin.value = document.getString("role") == "admin"
             }
-        }
+            .addOnFailureListener {
+                _errorMessage.value = "Erreur lors de la récupération du rôle utilisateur"
+            }
     }
 
     fun refreshUserData() {

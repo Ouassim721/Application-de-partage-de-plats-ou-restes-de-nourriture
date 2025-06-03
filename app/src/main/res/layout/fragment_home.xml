@@ -123,20 +123,6 @@
                         app:chipBackgroundColor="@color/gray_light"
                         app:chipIcon="@drawable/ic_pizza_slice" />
 
-                    <com.google.android.material.chip.Chip
-                        android:id="@+id/chipFilterHalal"
-                        style="@style/Widget.MaterialComponents.Chip.Action"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:checkable="true"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:text="Halal"
-                        android:textColor="@color/black"
-                        app:chipBackgroundColor="@color/gray_light"
-                        app:chipIcon="@drawable/ic_pizza_slice" />
-
                 </LinearLayout>
             </HorizontalScrollView>
 

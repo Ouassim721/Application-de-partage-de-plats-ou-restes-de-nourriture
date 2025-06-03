@@ -1,5 +1,6 @@
 package com.example.foodshareapp.ui.conversation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -36,7 +37,18 @@ class ConversationsViewModel : ViewModel() {
 
                 val list = mutableListOf<Conversation>()
                 for (doc in snapshots!!) {
-                    val conversation = doc.toObject(Conversation::class.java).copy(id = doc.id)
+                    val conversation = Conversation(
+                        id = doc.id,
+                        username = doc.getString("username") ?: "Utilisateur",
+                        lastMessage = doc.getString("lastMessage") ?: "",
+                        timestamp = doc.getLong("timestamp") ?: 0L,
+                        isUnread = doc.getBoolean("isUnread") ?: false,
+                        status = when (doc.getString("status")) {
+                            "CONFIRMED" -> ConversationStatus.CONFIRMED
+                            "COMPLETED" -> ConversationStatus.COMPLETED
+                            else -> ConversationStatus.NEW
+                        }
+                    )
                     list.add(conversation)
                 }
                 allConversations = list

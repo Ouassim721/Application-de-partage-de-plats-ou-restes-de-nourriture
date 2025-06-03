@@ -15,7 +15,7 @@ data class Plat(
     val expiration: String = "",
     val localisation: String = "",
     val imageUrl: String = "",
-    val reserve: Boolean = false,
+    var reserve: Boolean = false,
     val datePublication: Timestamp = Timestamp.now(),
     val latitude: Double = 0.0,
     val longitude: Double = 0.0,

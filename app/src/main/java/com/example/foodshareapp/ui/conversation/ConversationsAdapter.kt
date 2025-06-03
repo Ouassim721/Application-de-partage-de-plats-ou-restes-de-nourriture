@@ -14,7 +14,7 @@ import java.util.Locale
 import java.text.SimpleDateFormat
 import java.util.Date
 import android.graphics.Typeface
-
+import android.util.Log
 
 class ConversationsAdapter(
     private val conversations: List<Conversation>,
@@ -29,6 +29,7 @@ class ConversationsAdapter(
         val statusBadge = itemView.findViewById<TextView>(R.id.statusBadge)
 
         fun bind(convo: Conversation) {
+            Log.d("ConversationsAdapter", "Username: ${convo.username}") // 👈
             username.text = convo.username
             lastMessage.text = convo.lastMessage
             time.text = SimpleDateFormat("HH:mm", Locale.getDefault()).format(Date(convo.timestamp))
@@ -46,7 +47,6 @@ class ConversationsAdapter(
 
             itemView.setOnClickListener { onClick(convo) }
 
-            // TODO: Charger l'image avec Glide ou Coil
         }
     }
 

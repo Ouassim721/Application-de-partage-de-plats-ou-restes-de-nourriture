@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -35,6 +36,9 @@ import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.math.sqrt
 import androidx.navigation.fragment.findNavController
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 class HomeFragment : Fragment() {
@@ -49,7 +53,6 @@ class HomeFragment : Fragment() {
     private lateinit var chipFilterVegetarian: Chip
     private lateinit var chipFilterSweet: Chip
     private lateinit var chipFilterSalty: Chip
-    private lateinit var chipFilterHalal: Chip
 
     private var allPlats = mutableListOf<Plat>()
     private var filteredPlats = mutableListOf<Plat>()
@@ -70,7 +73,6 @@ class HomeFragment : Fragment() {
         chipFilterVegetarian = view.findViewById(R.id.chipFilterVegetarian)
         chipFilterSweet = view.findViewById(R.id.chipFilterSweet)
         chipFilterSalty = view.findViewById(R.id.chipFilterSalty)
-        chipFilterHalal = view.findViewById(R.id.chipFilterHalal)
 
         // Initialisation de l'adapter AVANT son utilisation
         adapter = PlatAdapter(
@@ -112,8 +114,6 @@ class HomeFragment : Fragment() {
         chipFilterVegetarian.setOnCheckedChangeListener { _, _ -> applyFiltersAndSearch() }
         chipFilterSweet.setOnCheckedChangeListener { _, _ -> applyFiltersAndSearch() }
         chipFilterSalty.setOnCheckedChangeListener { _, _ -> applyFiltersAndSearch() }
-        chipFilterHalal.setOnCheckedChangeListener { _, _ -> applyFiltersAndSearch() }
-
         loadPlats()
         return view
     }
@@ -176,48 +176,65 @@ class HomeFragment : Fragment() {
 
 
     private fun loadPlats() {
-        showLoadingState() // Afficher le skeleton loading
+        showLoadingState()
         db.collection("plats")
+            .whereEqualTo("reserve", false) // Filtre pour les plats non réservés
             .orderBy("datePublication", Query.Direction.DESCENDING)
             .addSnapshotListener { snapshots, error ->
-                hideLoadingState() // Cacher le skeleton loading
+                hideLoadingState()
                 if (error != null) {
-                    Toast.makeText(requireContext(), "Erreur de chargement des plats : ${error.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), "Erreur de chargement des plats: ${error.message}", Toast.LENGTH_SHORT).show()
                     return@addSnapshotListener
                 }
 
                 allPlats.clear()
+                val currentDate = Date()
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
                 for (doc in snapshots!!) {
                     val plat = doc.toObject(Plat::class.java)
-                    // Vous pouvez ajouter l'ID du document Firestore à votre objet Plat si nécessaire
-                    // val platWithId = plat.copy(id = doc.id)
-                    allPlats.add(plat)
+                    try {
+                        val expirationDate = dateFormat.parse(plat.expiration)
+                        // Vérifie si la date d'expiration est dans le futur
+                        if (expirationDate != null && expirationDate.after(currentDate)) {
+                            allPlats.add(plat)
+                        }
+                    } catch (e: Exception) {
+                        Log.e("HomeFragment", "Erreur de parsing de la date: ${e.message}")
+                    }
                 }
-                applyFiltersAndSearch() // Appliquer les filtres après le chargement initial
+                applyFiltersAndSearch()
             }
     }
 
     private fun applyFiltersAndSearch() {
         lifecycleScope.launch(Dispatchers.Default) {
+            val currentDate = Date()
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.getDefault())
+
             var tempFilteredPlats = allPlats.filter { plat ->
-                // Filtre par recherche texte (titre ou ingrédients)
-                val searchTerm = searchEditText.text.toString().trim()
-                val matchesSearch = if (searchTerm.isEmpty()) {
-                    true
-                } else {
-                    plat.titre.contains(searchTerm, ignoreCase = true) ||
-                            plat.ingredients.contains(searchTerm, ignoreCase = true) ||
-                            plat.description.contains(searchTerm, ignoreCase = true)
+                // Vérification de la date d'expiration
+                val isNotExpired = try {
+                    val expirationDate = dateFormat.parse(plat.expiration)
+                    expirationDate != null && expirationDate.after(currentDate)
+                } catch (e: Exception) {
+                    false
                 }
 
-                // Filtre par type de plat (chips)
+                // Filtre par recherche texte
+                val searchTerm = searchEditText.text.toString().trim()
+                val matchesSearch = searchTerm.isEmpty() ||
+                        plat.titre.contains(searchTerm, ignoreCase = true) ||
+                        plat.ingredients.contains(searchTerm, ignoreCase = true) ||
+                        plat.description.contains(searchTerm, ignoreCase = true)
+
+                // Filtre par type de plat
                 val matchesType =
                     (!chipFilterVegetarian.isChecked || plat.typePlat.contains("Végétarien")) &&
                             (!chipFilterSweet.isChecked || plat.typePlat.contains("Sucré")) &&
-                            (!chipFilterSalty.isChecked || plat.typePlat.contains("Salé")) &&
-                            (!chipFilterHalal.isChecked || plat.typePlat.contains("Halal"))
+                            (!chipFilterSalty.isChecked || plat.typePlat.contains("Salé"))
 
-                matchesSearch && matchesType
+                isNotExpired && matchesSearch && matchesType
             }.toMutableList()
 
             // Tri par distance si le chip est coché et la localisation disponible

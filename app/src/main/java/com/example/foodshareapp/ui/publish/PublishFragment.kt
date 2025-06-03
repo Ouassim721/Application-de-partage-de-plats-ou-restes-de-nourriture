@@ -34,6 +34,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
@@ -569,6 +570,14 @@ class PublishFragment : Fragment() {
                     "Plat publié avec succès !",
                     Toast.LENGTH_SHORT
                 ).show()
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                if (userId != null) {
+                    FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(userId)
+                        .update("dishesOfferedCount", FieldValue.increment(1))
+                }
+
                 clearFields()
             }
             .addOnFailureListener { e ->
